@@ -1,0 +1,9 @@
+erDiagram
+    USERS ||--o{ CONVERSATIONS : has
+    CONVERSATIONS ||--o{ MESSAGES : contains
+    USERS ||--o{ USAGE_RECORDS : consumes
+    USERS ||--o{ SUBSCRIPTIONS : holds
+    PLANS ||--o{ SUBSCRIPTIONS : "is chosen in"
+    SUBSCRIPTIONS ||--o{ PAYMENTS : "is paid by"
+    USERS ||--o{ DOCUMENTS : uploads
+    DOCUMENTS ||--o{ DOCUMENT_CHUNKS : "is split into"

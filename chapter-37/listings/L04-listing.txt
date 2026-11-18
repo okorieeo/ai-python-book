@@ -1,0 +1,28 @@
+== 3. What we send to /transaction/initialize
+subscription (no trial):
+{
+  "email": "ada@example.com",
+  "amount": 500000,
+  "currency": "NGN",
+  "reference": "ps_demo1",
+  "callback_url": "https://app.example.com/billing/callback",
+  "metadata": {
+    "user_id": "user-1",
+    "plan_key": "pro_monthly_ngn",
+    "kind": "subscription"
+  },
+  "plan": "PLN_pro_m"
+}
+trial: save a card first (no plan code, small amount):
+{
+  "email": "ada@example.com",
+  "amount": 5000,
+  "currency": "NGN",
+  "reference": "ps_demo2",
+  "callback_url": "https://app.example.com/billing/callback",
+  "metadata": {
+    "user_id": "user-1",
+    "plan_key": "pro_monthly_ngn",
+    "kind": "trial_authorization"
+  }
+}

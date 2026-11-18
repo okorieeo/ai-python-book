@@ -1,0 +1,18 @@
+# One user journey: first launch, accept the AI consent screen, send a message, see a reply.
+# Maestro drives the real app on a real emulator or simulator, so keep flows few and about journeys that matter.
+appId: com.example.aichat.preview      # use YOUR preview variant's identifier (Chapter 26)
+---
+- launchApp:
+    clearState: true
+- assertVisible: "Before you chat"
+- tapOn: "I agree"
+- assertVisible: "Message"
+- tapOn:
+    id: "chat-input"
+- inputText: "Say hello in five words"
+- tapOn:
+    id: "send-button"
+- assertVisible:
+    text: ".+"
+    index: 1
+    enabled: true

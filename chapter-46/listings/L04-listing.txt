@@ -1,0 +1,9 @@
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /chat
+├ ƒ /chat/[id]
+└ ○ /login
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand

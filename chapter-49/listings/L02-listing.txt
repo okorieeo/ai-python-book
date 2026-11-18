@@ -1,0 +1,9 @@
+Fix the root cause, in the smallest change.
+1) docker-compose.yml: set API_INTERNAL_URL=http://backend:8000 on the web service.
+2) Create web/src/lib/server-env.ts exporting apiInternalUrl(env = process.env):
+  return the
+   configured URL without trailing slashes; if it is missing, throw a clear error in
+   production and fall back to http://localhost:8000 only outside production.
+3) Use it in app/s/[token]/page.tsx instead of the inline fallback.
+Do NOT catch the fetch error and do NOT hard-code the Docker service name.
+Write a regression test first, show me it fails, then make it pass.

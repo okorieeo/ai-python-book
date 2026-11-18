@@ -1,0 +1,11 @@
+POST /their/webhook/url
+Content-Type: application/json
+X-Webhook-Id: aa1970e6-678a-4e58-8a66-80150189abf0
+X-Webhook-Signature: t=1793611200,v1=5b9c...e41
+
+{
+  "id": "aa1970e6-678a-4e58-8a66-80150189abf0",
+  "type": "document.ready",
+  "created_at": "2026-11-02T09:22:14.512Z",
+  "data": { "document_id": "942c5fc3-f4c7-4cd6-ba70-045b1e64d412" }
+}

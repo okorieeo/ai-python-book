@@ -1,0 +1,17 @@
+chatapp/                                  (Django, from Chapters 12 and 15)
+  accounts/    roles.py                   who may do what
+               admin.py                   the customized user admin
+  api/         permissions.py             has_permission("...")
+    v1/        admin_views.py             analytics, users list, CSV export
+               filters_admin.py
+  chat/        admin.py                   the admin for chats and documents
+    management/commands/seed_demo.py      demo data
+
+chatweb/                                  (Next.js)
+  src/lib/     api.ts  auth.ts  types.ts  permissions.ts  format.ts  ui.ts
+  src/hooks/   useAdmin.ts  useUrlParams.ts
+  src/components/   Providers  RoleGate  DataTable  Pagination
+                    UsersTable  Sidebar
+    dashboard/      StatCard  ChartCard  UsageChart  StatusChart
+                    RangeSelect  TopUsersList
+  src/app/     layout  login  admin/layout  admin/page  admin/users/page

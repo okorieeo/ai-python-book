@@ -1,0 +1,23 @@
+$ python -m pdb pricing.py
+> pricing.py(1)<module>()
+(Pdb) break pricing.py:3
+Breakpoint 1 at pricing.py:3
+(Pdb) continue
+> pricing.py(3)apply_discount()
+-> return price_minor - discount
+(Pdb) bt
+  pricing.py(14)<module>()
+-> print(total([{"price": 1999, "discount": 10}, {"price": 500, "discount": 0}]))
+  pricing.py(9)total()
+-> result += apply_discount(item["price"], item["discount"])
+> pricing.py(3)apply_discount()
+-> return price_minor - discount
+(Pdb) p price_minor, percent
+(1999, 10)
+(Pdb) p type(discount)
+<class 'float'>
+(Pdb) next
+--Return--
+> pricing.py(3)apply_discount()->1799.1
+(Pdb) p discount
+199.9

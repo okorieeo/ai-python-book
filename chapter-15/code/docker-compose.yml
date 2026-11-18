@@ -1,0 +1,19 @@
+services:
+  redis:
+    image: redis:7
+  worker:
+    build: .
+    command: celery -A config worker -Q default,ingest -l info --concurrency 2 -E
+    environment: { REDIS_URL: "redis://redis:6379/0" }
+    depends_on: [redis]
+  beat:                              # exactly ONE of these, ever
+    build: .
+    command: celery -A config beat -l info
+    environment: { REDIS_URL: "redis://redis:6379/0" }
+    depends_on: [redis]
+  flower:
+    build: .
+    command: celery -A config flower --port=5555 --basic-auth=admin:change-me
+    environment: { REDIS_URL: "redis://redis:6379/0" }
+    ports: ["5555:5555"]
+    depends_on: [redis]

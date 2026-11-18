@@ -1,0 +1,11 @@
+== 1. JSON hidden in a chatty reply
+{'title': 'Retrying Celery tasks', 'summary': 'Asks about retries.', 'topics': ['celery'], 'action_items': []}
+
+== 2. Validation problems
+$: missing required field 'action_items'
+$.title: longer than 60 characters
+$.topics: more than 5 items
+
+== 3. Retry with the error text
+attempts: 2 | data: {'title': 'T', 'summary': 'S', 'topics': [], 'action_items': []}
+feedback sent: Your previous reply was not valid. Problems: No JSON found in the reply. Reply again with only the corrected JSON.

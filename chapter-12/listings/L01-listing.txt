@@ -1,0 +1,11 @@
+chatapp/
+  manage.py
+  config/               settings.py, urls.py
+  accounts/             models.py          the user
+  chat/                 models.py, services.py      the domain: no HTTP in here
+  api/                  the HTTP layer
+    errors.py  middleware.py  pagination.py  permissions.py
+    quota.py   idempotency.py
+    v1/                 serializers.py  views.py  filters.py  urls.py
+    tests/              test_api.py
+  docs/                 openapi.generated.yaml

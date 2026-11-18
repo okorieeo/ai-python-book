@@ -1,0 +1,7 @@
+# Who must review changes to what. Replace the handles with your own team.
+*                       @your-org/maintainers
+/.github/               @your-org/platform
+/ci/                    @your-org/platform
+/backend/               @your-org/backend
+/web/                   @your-org/web
+/mobile/                @your-org/mobile

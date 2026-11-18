@@ -1,0 +1,15 @@
+AquaBrew 300 Coffee Machine: User Manual
+
+Setup
+
+Place the machine on a flat, stable surface. Fill the water tank with 1.5 liters of fresh water and run one rinse cycle before the first use.
+
+To pair the machine with the mobile app, hold the power button for 5 seconds until the Bluetooth light blinks blue, then follow the instructions in the app.Cleaning and descaling
+
+Descale the machine every 3 months, or when the indicator light blinks amber. Mix 250 ml of descaling solution with 750 ml of water, pour it into the tank and start the descale cycle, which takes 25 minutes.
+
+Empty and rinse the drip tray weekly. Only the drip tray is dishwasher safe; wash all other parts by hand.Troubleshooting and warranty
+
+Error E1 means the water tank is empty or not seated correctly. Error E2 means the pump is blocked by scale; run the descale cycle. Error E4 means the machine has overheated; unplug it for 30 minutes before trying again.
+
+The AquaBrew 300 has a 2 year limited warranty. Contact support at support@aquabrew.example with your serial number.

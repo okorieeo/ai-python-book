@@ -1,0 +1,20 @@
+python unit_economics.py
+Base case (per subscriber per month, USD):
+Plan     Price  AI cost  Pay fee   Infra   Profit   Margin
+Basic     9.00     2.10     0.57    0.30     6.03      67%
+Pro      19.00     7.50     0.87    0.30    10.33      54%
+
+What if every subscriber uses THREE times as many tokens?
+Plan     Price  AI cost  Pay fee   Infra   Profit   Margin
+Basic     9.00     6.30     0.57    0.30     1.83      20%
+Pro      19.00    22.50     0.87    0.30    -4.67     -25%
+
+Monthly profit of the whole business as the number of Pro subscribers grows:
+   10 Pro subscribers -> monthly profit    46.30 USD
+   30 Pro subscribers -> monthly profit   258.90 USD
+  100 Pro subscribers -> monthly profit  1003.00 USD
+  300 Pro subscribers -> monthly profit  3129.00 USD
+
+Each Pro subscriber contributes 10.63 USD toward the 60 USD fixed costs, so break-even is at 6 subscribers.
+
+Rough token budget: at a 70% margin target, a $19 plan can afford about 1.0M tokens per month (assuming a 77/23 input/output split).

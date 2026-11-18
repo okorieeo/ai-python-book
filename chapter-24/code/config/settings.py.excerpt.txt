@@ -1,0 +1,10 @@
+INSTALLED_APPS += ["devices"]
+
+REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"]["devices"] = "30/hour"
+
+EXPO_PUSH_URL = "https://exp.host/--/api/v2/push/send"
+# Optional: only needed if you enable "enhanced push security" in your Expo account.
+EXPO_PUSH_ACCESS_TOKEN = os.environ.get("EXPO_PUSH_ACCESS_TOKEN", "")
+
+# config/urls.py
+    path("api/v1/", include("devices.urls")),

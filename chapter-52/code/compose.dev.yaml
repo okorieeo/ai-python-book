@@ -1,0 +1,38 @@
+# compose.dev.yaml: local development. Ports are reachable from YOUR computer only.
+services:
+  db:
+    ports:
+      - "127.0.0.1:5432:5432"   # for psql or a GUI on your laptop
+
+  redis:
+    ports:
+      - "127.0.0.1:6379:6379"
+
+  backend:
+    command: ["uvicorn", "config.asgi:application",
+              "--host", "0.0.0.0", "--port", "8000", "--reload"]
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      DJANGO_DEBUG: "true"
+    volumes:
+      - ./backend:/app          # your code, live: edits reload the server
+
+  celery-worker:
+    environment:
+      DJANGO_DEBUG: "true"
+    volumes:
+      - ./backend:/app          # restart the worker after code changes
+
+  celery-beat:
+    environment:
+      DJANGO_DEBUG: "true"
+    volumes:
+      - ./backend:/app
+
+  # In development, run Next.js on your computer (npm run dev) for fast reloads.
+  # The built image is still available: docker compose --profile with-frontend up
+  frontend:
+    profiles: ["with-frontend"]
+    ports:
+      - "127.0.0.1:3000:3000"

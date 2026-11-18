@@ -1,0 +1,8 @@
+{% autoescape off %}Hi {{ name }},
+
+Please confirm your email address to finish setting up your account:
+
+{{ link }}
+
+The link expires in 2 days.
+{% endautoescape %}

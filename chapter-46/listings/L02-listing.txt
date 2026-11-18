@@ -1,0 +1,19 @@
+Build ConversationList in src/components/chat/ConversationList.tsx from the
+wireframe above (left column).
+
+Context: follow the conventions in @CLAUDE.md and the tokens in
+    @src/app/globals.css.
+The data type is Conversation in @src/lib/api/schema.d.ts (use only the fields it
+    has).
+
+Constraints:
+- Server-compatible: no state, no effects. Navigation uses next/link.
+- Only design tokens, no raw colors. Mobile first.
+
+Acceptance criteria:
+- A <nav> with an accessible name; the current conversation has aria-current="page".
+- A long title truncates instead of wrapping; an empty title shows "Untitled".
+- An empty list shows "No conversations yet".
+- ConversationList.test.tsx covers all of the above and passes
+    expectNoA11yViolations.
+Run npm run typecheck and npm test and show me the output.

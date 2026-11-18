@@ -1,0 +1,12 @@
+Story: Usage meter
+
+Given I am logged in on the Free plan with 1,000,000 tokens per month
+  And I have used 280,000 tokens this month
+When I open the chat screen
+Then I see "28% of your monthly limit used"
+  And the meter is announced to screen readers with its percentage
+
+Given I have used 100% of my tokens
+When I send a message
+Then I see the upgrade prompt with the date my allowance resets
+  And my message text is kept in the input box

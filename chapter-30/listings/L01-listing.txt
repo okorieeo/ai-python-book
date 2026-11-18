@@ -1,0 +1,10 @@
+{
+  "stop_reason": "tool_use",
+  "content": [
+    { "type": "text", "text": "I'll rename that chat for you." },
+    { "type": "tool_use",
+      "id": "toolu_01A09q90qw90lq917835lq9",
+      "name": "rename_conversation",
+      "input": { "conversation_id": 1, "new_title": "Egg report" } }
+  ]
+}

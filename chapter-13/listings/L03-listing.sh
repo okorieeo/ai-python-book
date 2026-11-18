@@ -1,0 +1,9 @@
+python manage.py test accounts
+ expected output
+Found 24 test(s).
+Creating test database for alias 'default'...
+........................
+----------------------------------------------------------------------
+Ran 24 tests in 15.278s
+OK
+Destroying test database for alias 'default'...

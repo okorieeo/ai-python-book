@@ -1,0 +1,22 @@
+import Constants from "expo-constants";
+import * as Notifications from "expo-notifications";
+import { Platform } from "react-native";
+
+/** Ask for permission, get the Expo push token, and tell our server. Call it after the person signs in. */
+export async function registerForPush(apiBase: string, authHeader: Record<string, string>): Promise<boolean> {
+  if (Platform.OS === "android") {
+    await Notifications.setNotificationChannelAsync("default", { name: "Reminders", importance: Notifications.AndroidImportance.DEFAULT });
+  }
+  const { status: existing } = await Notifications.getPermissionsAsync();
+  const { status } = existing === "granted" ? { status: existing } : await Notifications.requestPermissionsAsync();
+  if (status !== "granted") return false; // the person said no; the app still works, just without reminders
+
+  const projectId = Constants.expoConfig?.extra?.eas?.projectId as string | undefined;
+  const { data: token } = await Notifications.getExpoPushTokenAsync(projectId ? { projectId } : undefined);
+  const response = await fetch(`${apiBase}/api/v1/devices/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...authHeader },
+    body: JSON.stringify({ token }),
+  });
+  return response.ok;
+}

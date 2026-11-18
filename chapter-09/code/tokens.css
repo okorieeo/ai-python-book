@@ -1,0 +1,14 @@
+:root {
+  --color-primary: #2563EB;
+  --color-on-primary: #FFFFFF;
+  --color-surface: #FFFFFF;
+  --color-surface-muted: #F3F4F6;
+  --color-text: #111827;
+  --color-text-muted: #4B5563;
+  ...
+  --space-1: 4px;
+  --space-2: 8px;
+  ...
+  --radius-md: 10px;
+  --font-size-md: 16px;
+}

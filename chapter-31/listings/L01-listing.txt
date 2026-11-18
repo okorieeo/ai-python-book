@@ -1,0 +1,16 @@
+<untrusted_data label="retrieved_sources">
+<source id="S1" title="Refund Policy" section="Refund Policy / How to request a refund">
+## How to request a refund
+
+Open Settings, then Billing, and choose Request refund. You can also email billing@example.com with the email address of your account. Approved refunds appear on your card within 5 to 10 business days.
+</source>
+<source id="S2" title="Refund Policy" section="Refund Policy / Eligibility">
+# Refund Policy
+
+## Eligibility
+
+Monthly plans can be refunded in full within 14 days of the first payment. Annual plans can be refunded in full within 30 days of purchase. After that window we do not refund the current period, but you can cancel the renewal at any time.
+</source>
+</untrusted_data>
+
+Question: When do approved refunds appear on my card?

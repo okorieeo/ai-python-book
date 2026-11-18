@@ -1,0 +1,12 @@
+GET /api/v1/admin/users?page_size=2&ordering=-tokens_30d
+{
+  "count": 42,
+  "next": "http://…/admin/users?ordering=-tokens_30d&page=2&page_size=2",
+  "previous": null,
+  "results": [
+    {"username": "demo_user08", "role": "member", "is_active": true,
+     "conversation_count": 4, "tokens_30d": 152564,
+     "last_login": null, "...": "..."},
+    ...
+  ]
+}

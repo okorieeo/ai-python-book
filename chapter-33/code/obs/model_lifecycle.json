@@ -1,0 +1,7 @@
+{
+  "_comment": "Copy dates from Anthropic's 'Model deprecations' page and update this file when it changes. Checked November 2026.",
+  "claude-sonnet-4-5-20250929": {"status": "deprecated", "deprecated": "2026-09-30", "retires": "2026-11-30", "replacement": "claude-sonnet-5-5"},
+  "claude-sonnet-5-5": {"status": "active", "retires_not_before": null, "replacement": null},
+  "claude-haiku-5-5": {"status": "active", "retires_not_before": "2027-10-07", "replacement": null},
+  "claude-haiku-4-5": {"status": "active", "retires_not_before": "2026-10-15", "replacement": "claude-haiku-5-5"}
+}

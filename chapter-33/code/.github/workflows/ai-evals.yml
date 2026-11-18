@@ -1,0 +1,36 @@
+name: AI evals
+on:
+  pull_request:
+    paths: ["backend/ai/**", "backend/evals/**", "backend/obs/**", "backend/costs/**"]
+  schedule:
+    - cron: "0 5 * * *"          # a daily canary against the real model, so silent provider changes show up
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline:                         # free, fast, on every pull request
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: backend } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: python -m unittest discover -s . -p "test_*.py" -t .
+      - run: python -m obs.deprecation claude-sonnet-5-5 claude-haiku-5-5     # use YOUR configured models
+
+  live:                            # real model, real money: only on schedule or by hand
+    if: github.event_name != 'pull_request'
+    needs: offline
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: backend } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install anthropic
+      - run: python -m evals.run_live --dry-run
+      - run: python -m evals.run_live
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.EVAL_ANTHROPIC_API_KEY }}     # a SEPARATE key with its own spend limit

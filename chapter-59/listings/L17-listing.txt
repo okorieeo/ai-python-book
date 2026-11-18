@@ -1,0 +1,24 @@
+export function ConfirmationCard({ item, onDecide }: { item: PendingView; onDecide:
+  ↪ DecideFn }) {
+  return (
+    <div role="group" aria-label="Confirm action" className="rounded-lg border
+      ↪ border-amber-300 bg-amber-50 p-4 text-sm dark:border-amber-700 dark:bg-amber-950">
+      <p className="font-medium">Please confirm</p>
+      {/* item.summary was written by our server from validated arguments, not by the
+        ↪ model. */}
+      <p className="mt-1">{item.summary}</p>
+      <div className="mt-3 flex gap-2">
+        <button type="button" disabled={item.sending} onClick={() =>
+          ↪ onDecide(item.action_id, true)}
+          className="rounded bg-red-600 px-3 py-1.5 text-white disabled:opacity-50">
+          Yes, do it
+        </button>
+        <button type="button" disabled={item.sending} onClick={() =>
+          ↪ onDecide(item.action_id, false)}
+          className="rounded border px-3 py-1.5 disabled:opacity-50">
+          No, keep it
+        </button>
+      </div>
+    </div>
+  );
+}

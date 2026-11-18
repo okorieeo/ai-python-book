@@ -1,0 +1,53 @@
+# .github/workflows/deploy.yml  (Chapter 54)
+# Test first, then ask Dokploy to deploy, then smoke-test the live site.
+# In Dokploy, switch OFF "Auto Deploy" for this service: this workflow is the only trigger,
+# otherwise every push deploys twice.
+name: test-and-deploy
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false      # never cancel a deploy that has already started
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4          # pin to a commit SHA for stricter supply-chain safety (Chapter 17)
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pyyaml
+      - name: Lint the production compose file
+        run: python -m dokploycheck deploy/docker-compose.prod.yml --env-example deploy/.env.production.example
+      # Add your own jobs from Chapter 42 here: backend tests, frontend lint and build.
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    environment: production                # lets you require a manual approval in GitHub
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Ask Dokploy to deploy
+        env:
+          DOKPLOY_URL: ${{ secrets.DOKPLOY_URL }}                  # https://deploy.example.com
+          DOKPLOY_API_KEY: ${{ secrets.DOKPLOY_API_KEY }}
+          DOKPLOY_COMPOSE_ID: ${{ secrets.DOKPLOY_COMPOSE_ID }}
+        run: |
+          # Endpoint name: confirm "compose.deploy" in the API reference of YOUR Dokploy version.
+          curl --fail-with-body -sS -X POST "$DOKPLOY_URL/api/compose.deploy" \
+            -H "x-api-key: $DOKPLOY_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d "{\"composeId\": \"$DOKPLOY_COMPOSE_ID\"}"
+      - name: Smoke test the live site (waits for the new version)
+        run: |
+          python -m dokploycheck.smoke --app https://app.example.com --api https://api.example.com --wait 600

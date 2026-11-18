@@ -1,0 +1,30 @@
+name: Mobile preview update
+# Every merge to main publishes a JavaScript-only update to the PREVIEW channel.
+# Production updates are published by hand (see 26.9), never by this workflow.
+on:
+  push:
+    branches: [main]
+    paths: ["mobile/**"]
+
+permissions:
+  contents: read
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+      - run: npm ci
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+      - run: eas update --channel preview --environment preview --message "$GITHUB_SHA" --non-interactive

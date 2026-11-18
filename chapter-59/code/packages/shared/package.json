@@ -1,0 +1,16 @@
+{
+  "name": "@app/shared",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./assistant-protocol": "./src/assistant-protocol.ts",
+    "./calendar-layout": "./src/calendar-layout.ts",
+    "./useAssistant": "./src/useAssistant.ts"
+  },
+  "scripts": {
+    "test": "node --test \"src/*.test.ts\"",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": { "react": ">=18" }
+}

@@ -1,0 +1,9 @@
+Bug report: docs/debug/share-page-error.md (read it first). Do NOT change any code
+  yet.
+Step 1: reproduce it. Start the stack if it is not running, open the share URL with
+  curl from
+inside the web container, and show me the output.
+Step 2: use the bug-investigator subagent and give me at most three ranked
+  hypotheses, each with
+the cheapest experiment that would prove or kill it.
+Stop after step 2 and wait for me.

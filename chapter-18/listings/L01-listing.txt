@@ -1,0 +1,10 @@
+frontend/
+  src/app/              <- every route lives here (the App Router)
+    layout.tsx          <- the root layout (wraps every page)
+    page.tsx            <- the page at "/"
+    globals.css         <- global styles (Tailwind is imported here)
+  public/               <- files served as-is: /logo.png
+  next.config.ts        <- framework settings
+  tsconfig.json         <- TypeScript settings ("strict": true)
+  eslint.config.mjs     <- lint rules
+  package.json          <- dependencies and scripts: dev, build, start, lint

@@ -1,0 +1,11 @@
+== 5. Who gets paid features? Dates, not statuses
+active                             day 10 -> PAID active
+active, trial running              day 10 -> PAID free trial
+active, day 1 after due date       day 31 -> PAID renewal payment pending, in the grace period
+active, day 4 after due date       day 34 -> free the renewal payment was not received
+attention (last charge failed)     day 20 -> PAID last renewal failed, update your card
+attention, day 4 after due date    day 34 -> free the renewal payment was not received
+non-renewing, before the date      day 20 -> PAID cancelled, active until the end of the period
+non-renewing, after the date       day 31 -> free the subscription has ended
+cancelled                          day 20 -> free the subscription was cancelled
+completed                          day 20 -> free the subscription is complete

@@ -1,0 +1,14 @@
+    def test_age_stops_old_tasks_from_starving(self):
+        # Without the age bonus "new" would win (20 + 2 for being due in 10 days = 22
+          ↪ against 20).
+        tasks = [task("new", created_at=NOW, due_at=NOW + timedelta(days=10)),
+          ↪ task("old", created_at=NOW - timedelta(days=30))]
+        ranked = rank_tasks(tasks, now=NOW, tz=LAGOS)
+        self.assertEqual([r.task.id for r in ranked], ["old", "new"])
+        self.assertEqual([r.score for r in ranked], [23.0, 22.0])
+
+    def test_age_bonus_is_capped(self):
+        ranked = rank_tasks([task("ancient", created_at=NOW - timedelta(days=900))],
+          ↪ now=NOW, tz=LAGOS)
+        self.assertEqual(ranked[0].score, 23.0)  # 20 + 30 days * 0.1, not 900 days *
+          ↪ 0.1

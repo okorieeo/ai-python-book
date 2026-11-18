@@ -1,0 +1,4 @@
+"DEFAULT_THROTTLE_RATES": {
+    "anon": "30/min", "user": "300/min",
+    "ai_chat": "20/min", "auth": "10/min", "export": "5/min",
+},

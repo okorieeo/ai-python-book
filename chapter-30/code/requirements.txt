@@ -1,0 +1,4 @@
+# Used with the Chapter 27 ai_lab folder (copy it into backend/ first).
+anthropic>=2.4,<3
+jsonschema>=4.20
+pytest>=8

@@ -1,0 +1,17 @@
+# SAMPLE: check Expo's current "end-to-end tests" tutorial for the exact job syntax before relying on this.
+name: e2e-android
+on:
+  pull_request:
+    branches: ["main"]
+jobs:
+  build:
+    type: build
+    params:
+      platform: android
+      profile: e2e-test        # add this profile to eas.json: android.buildType "apk", ios.simulator true
+  maestro:
+    needs: [build]
+    type: maestro
+    params:
+      build_id: ${{ needs.build.outputs.build_id }}
+      flow_path: [".maestro/consent-and-chat.yaml", ".maestro/consent-declined.yaml"]

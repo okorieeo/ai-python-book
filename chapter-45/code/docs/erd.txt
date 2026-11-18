@@ -1,0 +1,21 @@
+# ERD for the conversations app (the source of truth you give Claude Code)
+model Conversation
+  public_id uuid unique
+  user fk User cascade
+  title char(200)
+  archived_at datetime null
+  created_at datetime
+  updated_at datetime index
+  index (user, -updated_at)
+
+model Message
+  public_id uuid unique
+  conversation fk Conversation cascade
+  role char(12)
+  content text
+  status char(12)
+  idempotency_key char(80) null
+  model_name char(80)
+  created_at datetime index
+  index (conversation, created_at)
+  unique (conversation, idempotency_key)

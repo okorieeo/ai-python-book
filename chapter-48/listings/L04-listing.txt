@@ -1,0 +1,29 @@
+You are in the backend lane of the feature in docs/specs/share-conversation.md. Do
+  tasks T2,
+T3 and T4 of docs/specs/share-conversation-tasks.md, ONE AT A TIME, and stop after
+  each for
+my review. Make one commit per task.
+
+Context: contracts/openapi.json is the contract and must not be changed. Follow the
+conventions in CLAUDE.md and Chapter 17 (core/permissions.py, core/security/,
+  audit/).
+
+Constraints:
+- Edit only backend/. Create the app backend/sharing/.
+- Store only the SHA-256 hash of the token. The raw token exists only in the return
+  value
+  of the create service (AC-2). Compare in constant time.
+- Keep business rules in sharing/services.py. Views stay thin.
+- Every owner query is scoped to request.user; other people's objects answer 404
+  (AC-7).
+- Unknown, expired and revoked links return the SAME 404 body (AC-6).
+- Public endpoint: no authentication classes, throttled per client address, and the
+  headers
+  Cache-Control: no-store and X-Robots-Tag: noindex (AC-8, AC-10).
+- Creating and revoking write an audit event in the same transaction (AC-9).
+- Counting a view must be one atomic UPDATE, not read-then-write (AC-13).
+
+Acceptance: each AC in the 'Covers' column of the task has a test whose name
+  contains its id.
+Verify: python manage.py test sharing, then python -m tools.trace_check on the spec.
+Start with T2 only. Show me the plan for T2 before you write code.

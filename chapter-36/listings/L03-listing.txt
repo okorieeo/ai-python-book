@@ -1,0 +1,14 @@
+step                             HTTP  outcome                    access reason
+----------------------------------------------------------------------------------------------------
+start checkout                    200  session cs_test_002        free   no subscription
+checkout completed                200  processed                  free   no subscription
+subscription created (trial)      200  processed                  PAID   free trial
+trial ends, first payment         200  processed                  PAID   active
+renewal payment fails             200  processed                  PAID   payment failed, in the grace period
+two days later (grace period)     200  processed                  PAID   payment failed, in the grace period
+four days later                   200  processed                  free   payment failed and the grace period is over
+customer pays                     200  processed                  PAID   active
+customer cancels                  200  processed                  PAID   cancels at the end of the period
+period ends                       200  processed                  free   the subscription was canceled
+
+messages sent to the user: payment_failed, payment_failed, cancellation_scheduled, subscription_ended

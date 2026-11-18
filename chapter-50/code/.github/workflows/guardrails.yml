@@ -1,0 +1,27 @@
+name: guardrails
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: guardrails-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: Tool tests
+        run: python -m unittest discover -s tools/tests -t .
+      - name: Secret scan (added lines only)
+        run: git diff origin/${{ github.base_ref }}...HEAD | python -m tools.secret_scan
+      - name: New dependencies need a human look
+        run: git diff origin/${{ github.base_ref }}...HEAD | python -m tools.dep_review || true   # ERROR lines are shown; decide in review
+      - name: Fix gate (tests present, no silenced checks)
+        run: git diff origin/${{ github.base_ref }}...HEAD | python -m tools.fix_gate   # remove this step if most of your PRs are features, not fixes

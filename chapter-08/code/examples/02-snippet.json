@@ -1,0 +1,8 @@
+{
+  "error": {
+    "code": "validation_error",
+    "message": "The request contains invalid fields.",
+    "details": { "content": ["This field may not be blank."] },
+    "request_id": "req_8f2a1c"
+  }
+}

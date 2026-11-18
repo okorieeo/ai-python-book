@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"]
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"]
+    },
+    "team-docs": {
+      "type": "http",
+      "url": "https://docs.mcp.example.com/mcp",
+      "headers": { "Authorization": "Bearer ${TEAM_DOCS_TOKEN}" }
+    }
+  }
+}

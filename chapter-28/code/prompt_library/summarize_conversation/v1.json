@@ -1,0 +1,11 @@
+{
+  "name": "summarize_conversation",
+  "version": "v1",
+  "description": "First attempt: short and vague.",
+  "changelog": "Baseline.",
+  "system": "You are a helpful assistant.",
+  "user": "Summarize this conversation:\n\n{{conversation}}",
+  "untrusted": [
+    "conversation"
+  ]
+}

@@ -1,0 +1,13 @@
+== 1. Money: whole numbers of the smallest unit
+    5000 NGN ->   500000 smallest units -> ₦5,000.00
+   49.99 USD ->     4999 smallest units -> $49.99
+    0.01 NGN ->        1 smallest units -> ₦0.01
+  1500.5 GHS ->   150050 smallest units -> GH₵1,500.50
+   49.99 USD -> refused: Pass the amount as a string, an int or a Decimal, never a float.
+'49.999' USD -> refused: 49.999 has more decimals than USD allows
+   'abc' NGN -> refused: Not a number: 'abc'
+    '12' EUR -> refused: Unsupported currency: 'EUR'
+
+== 2. The same plan table, one price list per currency
+NGN: pro_monthly_ngn ₦5,000.00; pro_yearly_ngn ₦50,000.00; team_monthly_ngn ₦15,000.00; credits_100 ₦2,000.00
+USD: pro_monthly_usd $10.00

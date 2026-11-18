@@ -1,0 +1,11 @@
+01:15:09 Task chat.tasks.ingest_document[f881] received      report.pdf
+01:15:09 Task chat.tasks.ingest_document[31ca] received      flaky.pdf
+01:15:10 Task chat.tasks.ingest_document[f881] succeeded in 1.03s: 'ready:3'
+01:15:10 Task chat.tasks.ingest_document[81cd] received      corrupt.pdf
+01:15:10 Task chat.tasks.ingest_document[31ca] retry: Retry in 2s: TransientError(
+         'Storage did not answer in time.')
+01:15:11 document 13 failed: The file could not be read.
+01:15:11 Task chat.tasks.ingest_document[81cd] succeeded in 1.00s: 'failed'
+01:15:13 Task chat.tasks.ingest_document[31ca] retry: Retry in 3s: TransientError(
+         'Storage did not answer in time.')
+01:15:17 Task chat.tasks.ingest_document[31ca] succeeded in 1.01s: 'ready:3'

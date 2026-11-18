@@ -1,0 +1,32 @@
+def create_event(
+    *, user, tz: ZoneInfo, title: str, start_local: datetime, end_local: datetime,
+      ↪ description: str = "",
+    location: str = "", recurrence: dict | None = None, remind_minutes_before: int |
+      ↪ None = None,
+) -> tuple[Event, list[EventOccurrence]]:
+    """Create an event. Returns it with the existing events it overlaps: a warning, not
+    an error."""
+    try:
+        title = clean_text(title, max_length=200, single_line=True)
+        description = clean_text(description or "", max_length=4000)
+        location = clean_text(location or "", max_length=200, single_line=True)
+    except ValueError as exc:
+        raise EventValidationError(str(exc)) from exc
+    if not title:
+        raise EventValidationError("title: must not be empty")
+    if remind_minutes_before is not None and not 0 <= remind_minutes_before <= 1440:
+        raise EventValidationError("remind_minutes_before: must be 0 to 1440")
+    if recurrence is not None:
+        try:
+            parse_rule(recurrence)
+        except RuleError as exc:
+            raise EventValidationError(f"recurrence: {exc}") from exc
+    start, end = _validated_times(start_local, end_local, tz)
+    clashes = _conflicts(user, start, end)
+    event = Event.objects.create(
+        user=user, title=title, description=description, location=location,
+          ↪ start_at=start, end_at=end,
+        timezone=tz.key, recurrence=recurrence, remind_minutes_before=remind_minutes_bef
+          ↪ ore,
+    )
+    return event, clashes

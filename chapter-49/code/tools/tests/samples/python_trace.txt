@@ -1,0 +1,10 @@
+2026-11-09 09:44:35,123 INFO GET /api/v1/public/shared/<token>/ request_id=7f3a
+2026-11-09 09:44:35,123 INFO Authorization: Bearer abc123def456ghi789jkl012 user=ada@example.com
+2026-11-09 09:44:35,124 ERROR unhandled error request_id=7f3a
+Traceback (most recent call last):
+  File "/app/sharing/views.py", line 41, in get
+    if is_expired(link.expires_at):
+  File "/app/museum/bug1_timezone/buggy.py", line 7, in is_expired
+    return expires_at <= now             # expires_at comes from the database, timezone-aware
+           ^^^^^^^^^^^^^^^^^
+TypeError: can't compare offset-naive and offset-aware datetimes

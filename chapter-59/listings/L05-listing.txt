@@ -1,0 +1,28 @@
+def build_day_plan(
+    ranked: Sequence[RankedTask],
+    slots: Sequence[Interval],
+    *,
+    break_minutes: int = 5,
+) -> DayPlan:
+    """Put the most important tasks into the earliest slots where they fit (first fit,
+    no splitting)."""
+    remaining = [Interval(s.start, s.end) for s in slots]
+    gap = timedelta(minutes=break_minutes)
+    plan = DayPlan()
+    for item in ranked:
+        need = timedelta(minutes=item.task.estimate_minutes or DEFAULT_ESTIMATE_MINUTES)
+        for index, slot in enumerate(remaining):
+            if slot.duration >= need:
+                end = slot.start + need
+                plan.items.append(PlanItem(item.task.id, item.task.title, slot.start,
+                  ↪ end, item.reasons))
+                rest_start = end + gap
+                if slot.end - rest_start > timedelta(0):
+                    remaining[index] = Interval(rest_start, slot.end)
+                else:
+                    del remaining[index]
+                break
+        else:
+            plan.unscheduled.append(item.task.id)
+    plan.items.sort(key=lambda p: p.start)
+    return plan

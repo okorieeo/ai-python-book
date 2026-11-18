@@ -1,0 +1,13 @@
+mobile/
+  app.json            <- app name, icon, URL scheme, plugins, experiments
+  package.json        <- dependencies and scripts (start, lint, ...)
+  tsconfig.json       <- TypeScript settings and the "@/" alias for src/
+  assets/             <- images, icons, splash screen
+  AGENTS.md           <- notes for you and for AI assistants (read it)
+  src/
+    app/              <- ROUTES. Every file here is a screen or a layout
+      _layout.tsx     <- the root navigator
+    components/       <- our own components (NOT routes)
+    hooks/            <- custom hooks
+    constants/        <- colours, spacing
+    lib/              <- data and helpers

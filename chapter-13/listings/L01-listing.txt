@@ -1,0 +1,10 @@
+accounts/
+  models.py         User, SocialAccount, Farm, FarmMember
+  serializers.py    validate input, shape output
+  views.py          the endpoints
+  urls.py           routes
+  permissions.py    who may call what (RBAC)
+  emails.py         verification and reset links
+  social.py         Google sign-in
+  exceptions.py     one error format for the whole API
+  tests.py          24 tests that prove the rules

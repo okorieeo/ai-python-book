@@ -1,0 +1,9 @@
+Review the changes on this branch against main (git diff main...HEAD). Do not edit
+  anything.
+Look for: bugs and boundary errors, missing authorization or owner scoping, secrets
+  or personal data in
+code or logs, new dependencies, swallowed errors, tests that cannot fail, and
+  anything that differs from
+the spec in docs/specs/. For each finding give file and line, why it matters, and
+  how sure you are.
+Say clearly if you found nothing. Do not invent problems to look useful.

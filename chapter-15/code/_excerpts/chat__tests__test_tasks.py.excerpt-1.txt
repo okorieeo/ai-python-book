@@ -1,0 +1,19 @@
+FAST = {"FAKE_PROCESSING_SECONDS": 0,
+        "PASSWORD_HASHERS": ["django.contrib.auth.hashers.MD5PasswordHasher"]}
+
+class CeleryTestMixin:
+    """Run tasks immediately, in-process: no Redis, no worker needed."""
+
+    def setUp(self):
+        super().setUp()
+        celery_app.conf.task_always_eager = True
+        self.addCleanup(setattr, celery_app.conf, "task_always_eager", False)
+        logging.disable(logging.CRITICAL)          # expected failures are noisy
+        self.addCleanup(logging.disable, logging.NOTSET)
+        self.ada = User.objects.create_user("ada", "ada@example.com", "pw-ada-1")
+
+    def make_doc(self, filename, status=Document.Status.PROCESSING):
+        return Document.objects.create(user=self.ada, filename=filename,
+                                       status=status)
+
+@override_settings(**FAST)

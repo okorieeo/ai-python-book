@@ -1,0 +1,62 @@
+# compose.prod.yaml: production-like settings. No published ports: a reverse proxy
+# (Chapter 54) reaches the containers over the Docker network.
+x-prod: &prod
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: "10m"
+      max-file: "3"
+  security_opt:
+    - no-new-privileges:true
+
+# For our own non-root containers: also drop every Linux capability.
+x-prod-app: &prod-app
+  <<: *prod
+  cap_drop:
+    - ALL
+
+services:
+  db:
+    <<: *prod
+
+  redis:
+    <<: *prod
+
+  migrate:
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+  backend:
+    <<: *prod-app
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+
+  celery-worker:
+    <<: *prod-app
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+
+  celery-beat:
+    <<: *prod-app
+
+  channels-worker:
+    <<: *prod-app
+
+  frontend:
+    <<: *prod-app
+    deploy:
+      resources:
+        limits:
+          memory: 512m

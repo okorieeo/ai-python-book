@@ -1,0 +1,4 @@
+TypeError: Cannot read properties of undefined (reading 'map')
+    at MessageList (webpack-internal:///(app-pages-browser)/./src/features/chat/MessageList.tsx:14:22)
+    at renderWithHooks (node_modules/react-dom/cjs/react-dom.development.js:15486:18)
+    at node:internal/process/task_queues:95:5

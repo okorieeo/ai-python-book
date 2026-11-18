@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "target": "ES2022", "lib": ["ES2022", "DOM"], "module": "CommonJS", "moduleResolution": "Node10",
+    "strict": true, "skipLibCheck": true, "outDir": "dist-test", "types": ["node"], "esModuleInterop": true
+  },
+  "include": ["shared/chat-client.ts", "shared/chat-protocol.ts", "shared/chat-state.ts", "shared/chat.test.ts"]
+}

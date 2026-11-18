@@ -1,0 +1,10 @@
+== 5. Who gets paid features? The same subscription at different moments
+active                          day 5  -> PAID active
+trialing                        day 5  -> PAID free trial
+active, cancel at period end    day 20 -> PAID cancels at the end of the period
+past_due, day 1 of grace        day 1  -> PAID payment failed, in the grace period
+past_due, day 4 (grace over)    day 4  -> free payment failed and the grace period is over
+canceled                        day 5  -> free the subscription was canceled
+unpaid                          day 5  -> free the invoice stayed unpaid
+incomplete                      day 5  -> free the first payment is not complete
+paused                          day 5  -> free the subscription is paused

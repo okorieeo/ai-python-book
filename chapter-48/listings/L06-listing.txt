@@ -1,0 +1,20 @@
+You are in the mobile lane of docs/specs/share-conversation.md. Do T8 only.
+
+Context: contracts/openapi.json is the contract (do not edit it). Existing API code
+  and secure
+token storage are in mobile/src/lib/ (Chapter 47). Follow CLAUDE.md.
+
+Constraints:
+- Edit only mobile/. Generate types with npm run api:types into src/lib/generated;
+  never edit them.
+- A typed client function createShareLink that sends the bearer token from secure
+  storage and
+  turns a 429 into the message 'Too many links today. Try again tomorrow.'
+- A hook useShareLink(api, conversationId) that creates a 7-day link and opens the
+  native
+  share sheet with the URL (AC-1, AC-11). It exposes busy and error state.
+- A ShareButton with an accessibility label and a visible busy state.
+- Do not store the link anywhere. It is shown once (AC-2).
+
+Acceptance: jest tests whose titles contain AC-1, AC-8 and AC-11.
+Verify: npm run typecheck && npm test -- --ci.

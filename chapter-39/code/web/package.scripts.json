@@ -1,0 +1,12 @@
+{
+  "scripts": {
+    "test": "jest",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
+  },
+  "devDependencies": {
+    "jest": "*", "jest-environment-jsdom": "*", "ts-node": "*", "@types/jest": "*",
+    "@testing-library/react": "*", "@testing-library/dom": "*", "@testing-library/jest-dom": "*", "@testing-library/user-event": "*",
+    "@playwright/test": "*"
+  }
+}

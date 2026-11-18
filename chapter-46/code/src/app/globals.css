@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+/* Design tokens: the ONLY place colors, radii and fonts are defined.
+   Components use the semantic names (bg-background, text-muted-foreground),
+   never raw hex values or palette steps like bg-blue-600. */
+:root {
+  --background: #ffffff;
+  --foreground: #111827;
+  --muted: #f3f4f6;
+  --muted-foreground: #4b5563;
+  --border: #d1d5db; /* decorative dividers only */
+  --input: #6b7280; /* control boundaries need 3:1 (WCAG 1.4.11) */
+  --primary: #1d4ed8;
+  --primary-foreground: #ffffff;
+  --danger: #b91c1c;
+  --ring: #1d4ed8;
+  --radius: 0.5rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0b1220;
+    --foreground: #f3f4f6;
+    --muted: #1f2937;
+    --muted-foreground: #9ca3af;
+    --border: #374151;
+    --input: #7c8696;
+    --primary: #3b82f6;
+    --primary-foreground: #0b1220;
+    --danger: #f87171;
+    --ring: #60a5fa;
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-danger: var(--danger);
+  --color-ring: var(--ring);
+  --radius-md: var(--radius);
+  /* System fonts: no network request, no layout shift. */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}

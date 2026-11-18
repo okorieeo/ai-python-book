@@ -1,0 +1,152 @@
+[
+ {
+  "question": "How many days of annual leave do I get?",
+  "doc": "employee_handbook.txt",
+  "page": 1,
+  "answerable": true
+ },
+ {
+  "question": "Can I carry unused vacation days into next year?",
+  "doc": "employee_handbook.txt",
+  "page": 1,
+  "answerable": true
+ },
+ {
+  "question": "When do I need a doctor's note for sick leave?",
+  "doc": "employee_handbook.txt",
+  "page": 1,
+  "answerable": true
+ },
+ {
+  "question": "How long is parental leave?",
+  "doc": "employee_handbook.txt",
+  "page": 1,
+  "answerable": true
+ },
+ {
+  "question": "How many days a week can I work remotely?",
+  "doc": "employee_handbook.txt",
+  "page": 2,
+  "answerable": true
+ },
+ {
+  "question": "How much is the home office stipend?",
+  "doc": "employee_handbook.txt",
+  "page": 2,
+  "answerable": true
+ },
+ {
+  "question": "Do I need the VPN on public Wi-Fi?",
+  "doc": "employee_handbook.txt",
+  "page": 2,
+  "answerable": true
+ },
+ {
+  "question": "What is the hotel limit per night?",
+  "doc": "employee_handbook.txt",
+  "page": 3,
+  "answerable": true
+ },
+ {
+  "question": "Within how many days must I submit expense reports?",
+  "doc": "employee_handbook.txt",
+  "page": 3,
+  "answerable": true
+ },
+ {
+  "question": "Who approves an expense above 500 USD?",
+  "doc": "employee_handbook.txt",
+  "page": 3,
+  "answerable": true
+ },
+ {
+  "question": "How long must a password be?",
+  "doc": "security_policy.txt",
+  "page": 1,
+  "answerable": true
+ },
+ {
+  "question": "Is multi-factor authentication required?",
+  "doc": "security_policy.txt",
+  "page": 1,
+  "answerable": true
+ },
+ {
+  "question": "How quickly must I report a security incident?",
+  "doc": "security_policy.txt",
+  "page": 2,
+  "answerable": true
+ },
+ {
+  "question": "What is the deadline to notify the regulator after a data breach?",
+  "doc": "security_policy.txt",
+  "page": 2,
+  "answerable": true
+ },
+ {
+  "question": "How long are backups retained?",
+  "doc": "security_policy.txt",
+  "page": 3,
+  "answerable": true
+ },
+ {
+  "question": "What do I do if my laptop is stolen?",
+  "doc": "security_policy.txt",
+  "page": 3,
+  "answerable": true
+ },
+ {
+  "question": "How often should I descale the coffee machine?",
+  "doc": "product_manual.txt",
+  "page": 2,
+  "answerable": true
+ },
+ {
+  "question": "What does error E2 mean?",
+  "doc": "product_manual.txt",
+  "page": 3,
+  "answerable": true
+ },
+ {
+  "question": "How do I pair the machine with the app?",
+  "doc": "product_manual.txt",
+  "page": 1,
+  "answerable": true
+ },
+ {
+  "question": "How long is the warranty?",
+  "doc": "product_manual.txt",
+  "page": 3,
+  "answerable": true
+ },
+ {
+  "question": "What is the CEO's salary?",
+  "doc": null,
+  "page": null,
+  "answerable": false
+ },
+ {
+  "question": "Can I bring my dog to the office?",
+  "doc": null,
+  "page": null,
+  "answerable": false
+ },
+ {
+  "question": "Which programming language does Acme use for its backend?",
+  "doc": null,
+  "page": null,
+  "answerable": false
+ },
+ {
+  "question": "What is the capital of Australia?",
+  "doc": null,
+  "page": null,
+  "answerable": false
+ },
+ {
+  "question": "How do I reset the thermostat?",
+  "doc": null,
+  "page": null,
+  "answerable": false
+ }
+]

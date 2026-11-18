@@ -1,0 +1,300 @@
+openapi: 3.0.3
+info:
+  title: AI Chat API
+  version: 1.0.0
+  description: Sample schema in the shape drf-spectacular produces for the Chapter 12 API.
+paths:
+  /api/v1/auth/login/:
+    post:
+      operationId: auth_login_create
+      tags: [auth]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Signed in. A refresh cookie is also set (HttpOnly).
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
+          description: Wrong email or password
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "429":
+          description: Too many attempts. See the Retry-After header.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+  /api/v1/auth/refresh/:
+    post:
+      operationId: auth_refresh_create
+      tags: [auth]
+      security: []
+      description: Uses the HttpOnly refresh cookie. Returns a new short-lived access token.
+      responses:
+        "200":
+          description: New access token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RefreshResponse"
+        "401":
+          description: Refresh cookie missing or expired
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+  /api/v1/conversations/:
+    get:
+      operationId: conversations_list
+      tags: [conversations]
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: One page of the caller's conversations
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedConversationList"
+        "401":
+          description: Not signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+    post:
+      operationId: conversations_create
+      tags: [conversations]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConversationRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Conversation"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+  /api/v1/conversations/{public_id}/messages/:
+    get:
+      operationId: conversations_messages_list
+      tags: [conversations]
+      parameters:
+        - in: path
+          name: public_id
+          schema:
+            type: string
+            format: uuid
+          required: true
+      responses:
+        "200":
+          description: Messages in the conversation, oldest first
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedMessageList"
+        "404":
+          description: No such conversation for this user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+  /api/v1/chat/tickets/:
+    post:
+      operationId: chat_tickets_create
+      tags: [chat]
+      description: Returns a short-lived, single-use ticket for opening one WebSocket (Chapter 14).
+      responses:
+        "201":
+          description: Ticket created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatTicket"
+        "401":
+          description: Not signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+components:
+  schemas:
+    ChatTicket:
+      type: object
+      properties:
+        ticket:
+          type: string
+        expires_in:
+          type: integer
+      required: [expires_in, ticket]
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          writeOnly: true
+      required: [email, password]
+    User:
+      type: object
+      properties:
+        public_id:
+          type: string
+          format: uuid
+          readOnly: true
+        email:
+          type: string
+          format: email
+          readOnly: true
+        first_name:
+          type: string
+        last_name:
+          type: string
+      required: [email, first_name, last_name, public_id]
+    LoginResponse:
+      type: object
+      properties:
+        access:
+          type: string
+        user:
+          $ref: "#/components/schemas/User"
+      required: [access, user]
+    RefreshResponse:
+      type: object
+      properties:
+        access:
+          type: string
+      required: [access]
+    ConversationRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          maxLength: 120
+      required: [title]
+    Conversation:
+      type: object
+      properties:
+        public_id:
+          type: string
+          format: uuid
+          readOnly: true
+        title:
+          type: string
+          maxLength: 120
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required: [created_at, public_id, title, updated_at]
+    PaginatedConversationList:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          format: uri
+          nullable: true
+        previous:
+          type: string
+          format: uri
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/Conversation"
+      required: [count, results]
+    RoleEnum:
+      type: string
+      enum: [user, assistant]
+    Message:
+      type: object
+      properties:
+        public_id:
+          type: string
+          format: uuid
+          readOnly: true
+        role:
+          $ref: "#/components/schemas/RoleEnum"
+        content:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required: [content, created_at, public_id, role]
+    PaginatedMessageList:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          format: uri
+          nullable: true
+        previous:
+          type: string
+          format: uri
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/Message"
+      required: [count, results]
+    ErrorBody:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        request_id:
+          type: string
+        fields:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+      required: [code, message]
+    ErrorEnvelope:
+      type: object
+      properties:
+        error:
+          $ref: "#/components/schemas/ErrorBody"
+      required: [error]

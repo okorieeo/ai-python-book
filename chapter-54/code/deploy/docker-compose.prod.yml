@@ -1,0 +1,98 @@
+# deploy/docker-compose.prod.yml  (Chapter 54)
+# The APP services only. PostgreSQL and Redis are created as Dokploy Databases (section 54.8),
+# so they are not here: no data store belongs in a file that is redeployed on every push.
+#
+# Adjust: build contexts (./backend, ./frontend), the Django project name (config) and the commands.
+
+x-backend-env: &backend-env
+  DJANGO_SETTINGS_MODULE: ${DJANGO_SETTINGS_MODULE:-config.settings.production}
+  SECRET_KEY: ${SECRET_KEY:?set SECRET_KEY in the Dokploy Environment tab}
+  DEBUG: ${DEBUG:-false}
+  ALLOWED_HOSTS: ${ALLOWED_HOSTS:?set ALLOWED_HOSTS}
+  CSRF_TRUSTED_ORIGINS: ${CSRF_TRUSTED_ORIGINS:?set CSRF_TRUSTED_ORIGINS}
+  CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:?set CORS_ALLOWED_ORIGINS}
+  TRUSTED_PROXY_COUNT: ${TRUSTED_PROXY_COUNT:-1}
+  DATABASE_URL: ${DATABASE_URL:?set DATABASE_URL}
+  REDIS_URL: ${REDIS_URL:?set REDIS_URL}
+  LLM_API_KEY: ${LLM_API_KEY:?set LLM_API_KEY}
+  STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:?set STRIPE_SECRET_KEY}
+  STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:?set STRIPE_WEBHOOK_SECRET}
+  PAYSTACK_SECRET_KEY: ${PAYSTACK_SECRET_KEY:?set PAYSTACK_SECRET_KEY}
+
+services:
+  chat-migrate:                      # one-shot: runs migrations, then exits
+    build: ./backend
+    image: chat-backend:${GIT_SHA:-prod}
+    command: python manage.py migrate --noinput
+    environment: *backend-env
+    restart: "no"
+    networks: [dokploy-network]
+
+  chat-api:                          # Django ASGI: HTTP and WebSockets
+    build: ./backend
+    image: chat-backend:${GIT_SHA:-prod}
+    command: daphne -b 0.0.0.0 -p 8000 config.asgi:application
+    environment: *backend-env
+    expose: ["8000"]
+    depends_on:
+      chat-migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "python", "-c", "import sys,urllib.request as u; sys.exit(0 if u.urlopen('http://127.0.0.1:8000/health/live', timeout=3).status == 200 else 1)"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+    networks: [dokploy-network]
+
+  chat-channels:                     # Channels background worker
+    image: chat-backend:${GIT_SHA:-prod}
+    command: python manage.py runworker background-tasks
+    environment: *backend-env
+    depends_on:
+      chat-migrate:
+        condition: service_completed_successfully
+    restart: unless-stopped
+    networks: [dokploy-network]
+
+  chat-worker:                       # Celery worker
+    image: chat-backend:${GIT_SHA:-prod}
+    command: celery -A config worker -l info --concurrency=2
+    environment: *backend-env
+    depends_on:
+      chat-migrate:
+        condition: service_completed_successfully
+    restart: unless-stopped
+    networks: [dokploy-network]
+
+  chat-beat:                         # Celery Beat: exactly ONE instance, never scale it
+    image: chat-backend:${GIT_SHA:-prod}
+    command: celery -A config beat -l info -s /tmp/celerybeat-schedule
+    environment: *backend-env
+    depends_on:
+      chat-migrate:
+        condition: service_completed_successfully
+    restart: unless-stopped
+    networks: [dokploy-network]
+
+  chat-web:                          # Next.js
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:?set NEXT_PUBLIC_API_URL}
+        NEXT_PUBLIC_WS_URL: ${NEXT_PUBLIC_WS_URL:?set NEXT_PUBLIC_WS_URL}
+    image: chat-frontend:${GIT_SHA:-prod}
+    expose: ["3000"]
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:3000/api/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    restart: unless-stopped
+    networks: [dokploy-network]
+
+networks:
+  dokploy-network:
+    external: true

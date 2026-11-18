@@ -1,0 +1,27 @@
+services:
+  db:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: hunter2
+  cache:
+    image: redis
+    ports: ["6379:6379"]
+  api:
+    build: ./backend
+    container_name: api
+    ports: ["8000:8000"]
+    environment:
+      - SECRET_KEY=django-insecure-abc123
+      - DATABASE_URL=${DATABASE_URL}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - MISSING_VAR=${NOT_IN_EXAMPLE}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./media:/app/media
+  web:
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_STRIPE_SECRET_KEY: sk_live_oops

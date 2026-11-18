@@ -1,0 +1,9 @@
+4. A month of heavy use on Pro, then the renewal invoice with 7.5% tax (an example rate)
+   usage: 1650 of 1500 included
+     Invoice INV-2026-000002
+       Pro (monthly)  x1  $29.00
+       Extra AI messages: 150 over 1500, in blocks of 100  x2  $3.00
+       Tax: $2.40
+       Total: $34.40
+   payment recorded: True; the same payment message arriving again was recorded: False
+   invoice status: paid

@@ -1,0 +1,12 @@
+flowchart LR
+    Web[Next.js web] --> Proxy[Reverse proxy]
+    Mobile[React Native app] --> Proxy
+    Proxy --> API[Django REST API]
+    Proxy --> WS[Django Channels]
+    API --> DB[(PostgreSQL)]
+    API --> Redis[(Redis)]
+    API --> Queue{{Celery queue}}
+    Queue --> Worker[Celery worker]
+    Worker --> DB
+    WS --> AI[AI provider]
+    Stripe[Stripe / Paystack] -- webhook --> Proxy

@@ -1,0 +1,32 @@
+# ---- Secrets and local configuration: NEVER inside an image (Chapter 17) ----
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+
+# ---- Version control and CI ----
+.git
+.gitignore
+.github
+
+# ---- Python junk ----
+.venv
+venv
+__pycache__
+*.py[cod]
+.pytest_cache
+.ruff_cache
+.mypy_cache
+.coverage
+htmlcov
+
+# ---- Local data that belongs in volumes, not images ----
+*.sqlite3
+media/
+staticfiles/
+
+# ---- Other ----
+node_modules
+.DS_Store

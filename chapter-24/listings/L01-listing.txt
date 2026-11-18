@@ -1,0 +1,30 @@
+mobile/
+  app/
+    _layout.tsx           providers, route guards, splash screen
+    (auth)/login.tsx, register.tsx
+    (tabs)/_layout.tsx, documents.tsx, inbox.tsx, profile.tsx
+  src/
+    config.ts             API address, EAS project id
+    api/errors.ts         ApiError, NetworkError, friendly messages
+    api/client.ts         fetch wrapper: token, refresh, retry, timeout
+    api/endpoints.ts      one typed function per endpoint
+    api/index.ts          the single shared store, client and endpoints
+    auth/tokenStore.ts    access token in memory, refresh token in storage
+    auth/secureStorage.ts the Keychain / Keystore adapter
+    auth/AuthContext.tsx  who is signed in, and the state of the session
+    realtime/socket.ts    reconnecting WebSocket
+    realtime/useInbox.ts  the hook the Inbox screen uses
+    push/pushRules.ts     token format, allow-listed routes
+    push/registrar.ts     tell the server about this phone
+    push/pushActions.ts   permission, channel, token
+    push/usePush.ts       keep the token fresh, handle taps
+    media/mediaRules.ts   size and type checks, FormData
+    media/permissions.ts  granted / denied / blocked
+    media/pickImage.ts    camera and library
+    media/CameraCapture.tsx
+    documents/useDocuments.ts
+  __tests__/              51 tests in 5 files
+
+backend/
+  devices/                models, serializers, views, push.py, tests
+  documents/              GET /documents/{id}/link (added)

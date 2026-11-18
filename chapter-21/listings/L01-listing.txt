@@ -1,0 +1,11 @@
+shows the user message at once, as sending
+swaps in the server id when the message is accepted
+streams an answer: start, deltas, end
+ignores a duplicate acknowledgement and a duplicate start
+ignores a late delta after the message ended
+fails a send and lets the user retry the same message
+a rate-limit error fails only that send and keeps the retry-after
+a dropped connection interrupts a stream and fails unsent messages
+never prunes a message that is still streaming or failed
+does not show a message twice once history contains it (by id)
+matches by client id when the server id was never learned

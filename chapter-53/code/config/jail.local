@@ -1,0 +1,13 @@
+# /etc/fail2ban/jail.local   (Chapter 53)
+# Ban an address for an hour after 5 failed SSH logins within 10 minutes.
+[DEFAULT]
+bantime  = 1h
+findtime = 10m
+maxretry = 5
+backend  = systemd
+# Never ban yourself: list your own fixed address if you have one.
+# ignoreip = 127.0.0.1/8 ::1 203.0.113.50
+
+[sshd]
+enabled = true
+port    = ssh

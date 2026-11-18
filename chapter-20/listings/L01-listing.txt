@@ -1,0 +1,24 @@
+web/
+  proxy.ts                         <- route protection (Next.js 16 name for "middleware")
+  .env.local                       <- BACKEND_URL (server-only!), APP_ORIGIN
+  app/
+    layout.tsx                     <- wrap children in <Providers>
+    login/page.tsx   signup/page.tsx   chat/page.tsx
+    api/
+      auth/login/route.ts          <- handleLogin
+      auth/logout/route.ts         <- handleLogout
+      v1/[...path]/route.ts        <- the gateway (forwards everything else to Django)
+  components/
+    Providers.tsx   LogoutButton.tsx
+    forms/Field.tsx  LoginForm.tsx  SignupForm.tsx  NewConversationForm.tsx
+    chat/ConversationList.tsx
+  lib/
+    api/    errors.ts  query-string.ts  client.ts  types.ts  endpoints.ts  auth.ts
+    auth/   jwt.ts  redirects.ts
+    bff/    config.ts env.ts cookies.ts backend.ts session.ts gateway.ts auth-handlers.ts
+    forms/  validators.ts  schemas.ts  server-errors.ts
+    query/  keys.ts  retry.ts  cache-updates.ts  hooks.ts
+    state/  drafts.ts  ui-store.ts
+  tests/    helpers.ts  unit.test.ts  client.test.ts  bff.test.ts  field.test.tsx
+
+tools/mock_backend/mock_backend.py   <- at the repository root

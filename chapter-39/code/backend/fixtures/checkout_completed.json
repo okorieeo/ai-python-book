@@ -1,0 +1,13 @@
+{
+  "id": "evt_fixture_1",
+  "object": "event",
+  "type": "checkout.session.completed",
+  "created": 1700000000,
+  "data": {
+    "object": {
+      "id": "cs_test_fixture",
+      "client_reference_id": "7",
+      "metadata": { "credits": "100" }
+    }
+  }
+}

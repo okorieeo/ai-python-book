@@ -1,0 +1,18 @@
+docker compose exec redis redis-cli
+
+> SET greeting "hello"
+OK
+> GET greeting
+"hello"
+> SET session:42 "ada" EX 60        # expires automatically in 60 seconds
+OK
+> TTL session:42
+(integer) 57
+> INCR api_calls:user:1             # atomic counter
+(integer) 1
+> INCR api_calls:user:1
+(integer) 2
+> LPUSH queue "job1"                # lists work as queues
+> RPOP queue
+"job1"
+> KEYS *                            # fine for learning; avoid on big production data

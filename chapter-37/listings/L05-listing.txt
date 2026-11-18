@@ -1,0 +1,13 @@
+correct signature                              -> HTTP 200 processed
+a captured valid request sent again            -> HTTP 200 duplicate
+signature made with SHA-256 instead of SHA-512 -> HTTP 400 bad_signature
+signature made with the wrong key              -> HTTP 400 bad_signature
+body changed after signing                     -> HTTP 400 bad_signature
+no signature header                            -> HTTP 400 bad_signature
+live-mode event in test mode                   -> HTTP 200 ignored_wrong_mode
+event type we do not handle                    -> HTTP 200 ignored
+credits after all of that                      -> 100
+forged: amount lower than the price            -> HTTP 200 processed
+credits after the underpaid charge             -> 100
+charge.success for a reference we never made   -> HTTP 200 processed
+alerts sent to the team: ['amount_mismatch']

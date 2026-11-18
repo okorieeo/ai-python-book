@@ -1,0 +1,835 @@
+diff --git a/.gitignore b/.gitignore
+new file mode 100644
+index 0000000..3c3629e
+--- /dev/null
++++ b/.gitignore
+@@ -0,0 +1 @@
++node_modules
+diff --git a/.prettierrc.json b/.prettierrc.json
+new file mode 100644
+index 0000000..dc8c710
+--- /dev/null
++++ b/.prettierrc.json
+@@ -0,0 +1,5 @@
++{
++  "singleQuote": true,
++  "printWidth": 120,
++  "trailingComma": "all"
++}
+diff --git a/__tests__/dictationState.test.ts b/__tests__/dictationState.test.ts
+index a1d5599..49b7a8a 100644
+--- a/__tests__/dictationState.test.ts
++++ b/__tests__/dictationState.test.ts
+@@ -1,13 +1,25 @@
+ import assert from 'node:assert/strict';
+ import { describe, it } from 'node:test';
+-import { dictationReducer, initialDictation, type DictationEvent, type DictationState } from '../lib/media/dictationState';
++import {
++  dictationReducer,
++  initialDictation,
++  type DictationEvent,
++  type DictationState,
++} from '../lib/media/dictationState';
+ 
+ const run = (events: DictationEvent[], start: DictationState = initialDictation, max?: number) =>
+   events.reduce((state, event) => dictationReducer(state, event, max), start);
+ 
+ describe('dictation state machine', () => {
+   it('goes from idle through recording and uploading back to idle with the text', () => {
+-    const state = run([{ type: 'press' }, { type: 'permission', granted: true }, { type: 'tick' }, { type: 'tick' }, { type: 'stop' }, { type: 'uploaded', text: 'hello' }]);
++    const state = run([
++      { type: 'press' },
++      { type: 'permission', granted: true },
++      { type: 'tick' },
++      { type: 'tick' },
++      { type: 'stop' },
++      { type: 'uploaded', text: 'hello' },
++    ]);
+     assert.deepEqual(state, { phase: 'idle', seconds: 0, text: 'hello' });
+   });
+ 
+@@ -23,7 +35,11 @@ describe('dictation state machine', () => {
+   });
+ 
+   it('stops by itself at the time limit', () => {
+-    const state = run([{ type: 'press' }, { type: 'permission', granted: true }, ...Array(3).fill({ type: 'tick' })], initialDictation, 3);
++    const state = run(
++      [{ type: 'press' }, { type: 'permission', granted: true }, ...Array(3).fill({ type: 'tick' })],
++      initialDictation,
++      3,
++    );
+     assert.equal(state.phase, 'uploading');
+     assert.equal(state.seconds, 3);
+   });
+@@ -40,12 +56,23 @@ describe('dictation state machine', () => {
+   });
+ 
+   it('a late answer after cancelling is ignored', () => {
+-    const state = run([{ type: 'press' }, { type: 'permission', granted: true }, { type: 'stop' }, { type: 'cancel' }, { type: 'uploaded', text: 'late' }]);
++    const state = run([
++      { type: 'press' },
++      { type: 'permission', granted: true },
++      { type: 'stop' },
++      { type: 'cancel' },
++      { type: 'uploaded', text: 'late' },
++    ]);
+     assert.deepEqual(state, initialDictation);
+   });
+ 
+   it('an upload failure can be retried by pressing the button again', () => {
+-    const failed = run([{ type: 'press' }, { type: 'permission', granted: true }, { type: 'stop' }, { type: 'failed', message: 'Busy', canTryAgain: true }]);
++    const failed = run([
++      { type: 'press' },
++      { type: 'permission', granted: true },
++      { type: 'stop' },
++      { type: 'failed', message: 'Busy', canTryAgain: true },
++    ]);
+     assert.equal(failed.error?.canTryAgain, true);
+     assert.equal(dictationReducer(failed, { type: 'press' }).phase, 'asking');
+   });
+diff --git a/__tests__/geometry.test.ts b/__tests__/geometry.test.ts
+index 608fe5e..ce253d1 100644
+--- a/__tests__/geometry.test.ts
++++ b/__tests__/geometry.test.ts
+@@ -2,7 +2,11 @@ import assert from 'node:assert/strict';
+ import { describe, it } from 'node:test';
+ import { StableDetector, clampBox, iou, mapBoxToView, nms, orderCorners, type Detection } from '../lib/cv/geometry';
+ 
+-const det = (x: number, y: number, w: number, h: number, score: number, label = 'cup'): Detection => ({ box: { x, y, width: w, height: h }, score, label });
++const det = (x: number, y: number, w: number, h: number, score: number, label = 'cup'): Detection => ({
++  box: { x, y, width: w, height: h },
++  score,
++  label,
++});
+ 
+ describe('iou', () => {
+   it('is 1 for identical boxes, 0 for boxes that do not touch, and exact in between', () => {
+@@ -23,11 +27,21 @@ describe('iou', () => {
+ describe('nms', () => {
+   it('keeps the best of several boxes on the same object', () => {
+     const result = nms([det(10, 10, 100, 100, 0.8), det(12, 11, 100, 100, 0.95), det(8, 9, 102, 100, 0.6)]);
+-    assert.deepEqual(result.map((d) => d.score), [0.95]);
++    assert.deepEqual(
++      result.map((d) => d.score),
++      [0.95],
++    );
+   });
+   it('keeps separate objects, and boxes with different labels do not suppress each other', () => {
+     const result = nms([det(0, 0, 100, 100, 0.9), det(300, 300, 100, 100, 0.8), det(5, 5, 100, 100, 0.7, 'table')]);
+-    assert.deepEqual(result.map((d) => [d.label, d.score]), [['cup', 0.9], ['cup', 0.8], ['table', 0.7]]);
++    assert.deepEqual(
++      result.map((d) => [d.label, d.score]),
++      [
++        ['cup', 0.9],
++        ['cup', 0.8],
++        ['table', 0.7],
++      ],
++    );
+   });
+   it('drops weak detections and caps the count', () => {
+     assert.deepEqual(nms([det(0, 0, 10, 10, 0.2)]), []);
+@@ -54,7 +68,15 @@ describe('mapBoxToView', () => {
+     assert.deepEqual(mapBoxToView(box, frame, view, 'cover', true), { x: 300, y: 0, width: 100, height: 100 });
+   });
+   it('a frame with the same shape as the view only scales', () => {
+-    assert.deepEqual(mapBoxToView({ x: 10, y: 20, width: 30, height: 40 }, { width: 100, height: 200 }, { width: 200, height: 400 }, 'cover'), { x: 20, y: 40, width: 60, height: 80 });
++    assert.deepEqual(
++      mapBoxToView(
++        { x: 10, y: 20, width: 30, height: 40 },
++        { width: 100, height: 200 },
++        { width: 200, height: 400 },
++        'cover',
++      ),
++      { x: 20, y: 40, width: 60, height: 80 },
++    );
+   });
+ });
+ 
+@@ -67,7 +89,10 @@ describe('clampBox', () => {
+ });
+ 
+ describe('orderCorners', () => {
+-  const tl = { x: 0, y: 0 }, tr = { x: 10, y: 0 }, br = { x: 10, y: 10 }, bl = { x: 0, y: 10 };
++  const tl = { x: 0, y: 0 },
++    tr = { x: 10, y: 0 },
++    br = { x: 10, y: 10 },
++    bl = { x: 0, y: 10 };
+   it('returns the same order everywhere (top-left, top-right, bottom-right, bottom-left)', () => {
+     assert.deepEqual(orderCorners([tl, tr, br, bl], 'android'), [tl, tr, br, bl]);
+     assert.deepEqual(orderCorners([tl, tr, br, bl], 'web'), [tl, tr, br, bl]);
+@@ -87,7 +112,8 @@ describe('StableDetector', () => {
+   });
+   it('a flicker resets the count', () => {
+     const d = new StableDetector({ framesRequired: 3 });
+-    d.update('A', 0); d.update('A', 30);
++    d.update('A', 0);
++    d.update('A', 30);
+     assert.equal(d.update('B', 60), null);
+     assert.equal(d.update('A', 90), null);
+     assert.equal(d.update(null, 120), null);
+@@ -104,13 +130,16 @@ describe('StableDetector', () => {
+     const d = new StableDetector({ framesRequired: 2, cooldownMs: 60_000, clearAfterEmptyFrames: 3 });
+     d.update('A', 0);
+     assert.equal(d.update('A', 30), 'A');
+-    d.update(null, 60); d.update(null, 90); d.update(null, 120);
++    d.update(null, 60);
++    d.update(null, 90);
++    d.update(null, 120);
+     d.update('A', 150);
+     assert.equal(d.update('A', 180), 'A');
+   });
+   it('a different code fires at once, cooldown or not', () => {
+     const d = new StableDetector({ framesRequired: 2, cooldownMs: 60_000 });
+-    d.update('A', 0); assert.equal(d.update('A', 30), 'A');
++    d.update('A', 0);
++    assert.equal(d.update('A', 30), 'A');
+     d.update('B', 60);
+     assert.equal(d.update('B', 90), 'B');
+   });
+diff --git a/__tests__/helpers.ts b/__tests__/helpers.ts
+index 497b718..f5917db 100644
+--- a/__tests__/helpers.ts
++++ b/__tests__/helpers.ts
+@@ -2,7 +2,8 @@ import { ApiError } from '../lib/net/errors';
+ 
+ export const networkError = () => new ApiError({ kind: 'network' });
+ export const timeoutError = () => new ApiError({ kind: 'timeout' });
+-export const httpError = (status: number, retryAfterMs?: number) => new ApiError({ kind: 'http', status, retryAfterMs });
++export const httpError = (status: number, retryAfterMs?: number) =>
++  new ApiError({ kind: 'http', status, retryAfterMs });
+ 
+ export const json = (data: unknown, init: ResponseInit = {}) =>
+   new Response(JSON.stringify(data), { status: 200, headers: { 'Content-Type': 'application/json' }, ...init });
+diff --git a/__tests__/scan.test.ts b/__tests__/scan.test.ts
+index cce2e65..abceb81 100644
+--- a/__tests__/scan.test.ts
++++ b/__tests__/scan.test.ts
+@@ -14,16 +14,32 @@ describe('parseScannedUrl', () => {
+   });
+ 
+   it('refuses other schemes: http, javascript, file, intent, tel, sms and plain text', () => {
+-    for (const bad of ['http://example.com', 'javascript:alert(1)', 'file:///etc/passwd', 'intent://scan#Intent;end', 'tel:+123', 'sms:+123', 'just text', 'WIFI:S:net;P:pass;;']) {
++    for (const bad of [
++      'http://example.com',
++      'javascript:alert(1)',
++      'file:///etc/passwd',
++      'intent://scan#Intent;end',
++      'tel:+123',
++      'sms:+123',
++      'just text',
++      'WIFI:S:net;P:pass;;',
++    ]) {
+       assert.equal(ok(bad), false, bad);
+     }
+   });
+ 
+   it('refuses look-alike and tricky hosts', () => {
+     for (const bad of [
+-      'https://example.com.evil.net/x', 'https://notexample.com/x', 'https://evil.net/https://example.com',
+-      'https://example.com@evil.net/x', 'https://user:pass@example.com/x', 'https://example.com:8443/x',
+-      'https://evil.net#@example.com', 'https://127.0.0.1/x', 'https://localhost/x', 'https://exämple.com/x',
++      'https://example.com.evil.net/x',
++      'https://notexample.com/x',
++      'https://evil.net/https://example.com',
++      'https://example.com@evil.net/x',
++      'https://user:pass@example.com/x',
++      'https://example.com:8443/x',
++      'https://evil.net#@example.com',
++      'https://127.0.0.1/x',
++      'https://localhost/x',
++      'https://exämple.com/x',
+     ]) {
+       assert.equal(ok(bad), false, bad);
+     }
+diff --git a/__tests__/sensors.test.ts b/__tests__/sensors.test.ts
+index c57c0b3..c058c75 100644
+--- a/__tests__/sensors.test.ts
++++ b/__tests__/sensors.test.ts
+@@ -7,7 +7,11 @@ const rest = { x: 0, y: 0, z: 1 }; // gravity only
+ const hard = { x: 2.2, y: 0.3, z: 0.4 }; // a violent movement
+ 
+ /** Feed readings 50 ms apart and report the times a shake was recognised. */
+-function shakes(readings: Array<{ x: number; y: number; z: number }>, detector = new ShakeDetector(), stepMs = 50): number[] {
++function shakes(
++  readings: { x: number; y: number; z: number }[],
++  detector = new ShakeDetector(),
++  stepMs = 50,
++): number[] {
+   return readings.flatMap((r, i) => (detector.push(r, i * stepMs) ? [i * stepMs] : []));
+ }
+ 
+diff --git a/__tests__/upload.test.ts b/__tests__/upload.test.ts
+index 6ece106..d7a7052 100644
+--- a/__tests__/upload.test.ts
++++ b/__tests__/upload.test.ts
+@@ -7,7 +7,7 @@ import { json } from './helpers';
+ 
+ class FakeForm {
+   static last: FakeForm | null = null;
+-  entries: Array<[string, unknown]> = [];
++  entries: [string, unknown][] = [];
+   constructor() {
+     FakeForm.last = this;
+   }
+@@ -29,7 +29,7 @@ describe('createForm', () => {
+ });
+ 
+ describe('uploadFile', () => {
+-  let calls: Array<{ url: string; init: RequestInit }>;
++  let calls: { url: string; init: RequestInit }[];
+   let answer: () => Response;
+   let unauthorized: number;
+ 
+@@ -56,20 +56,28 @@ describe('uploadFile', () => {
+     assert.equal(init.method, 'POST');
+     const headers = init.headers as Record<string, string>;
+     assert.equal(headers.Authorization, 'Bearer tok');
+-    assert.equal(Object.keys(headers).some((h) => h.toLowerCase() === 'content-type'), false);
++    assert.equal(
++      Object.keys(headers).some((h) => h.toLowerCase() === 'content-type'),
++      false,
++    );
+     assert.ok(init.body instanceof FakeForm);
+   });
+ 
+   it('turns a refusal code from the server into a plain sentence', async () => {
+     answer = () => json({ code: 'heic_not_supported', detail: 'x' }, { status: 415 });
+     await assert.rejects(uploadFile('/attachments/', file, { FormDataImpl: FakeForm }), (e: UploadError) => {
+-      return e instanceof UploadError && e.code === 'heic_not_supported' && /JPEG/.test(e.message) && e.canTryAgain === false;
++      return (
++        e instanceof UploadError && e.code === 'heic_not_supported' && /JPEG/.test(e.message) && e.canTryAgain === false
++      );
+     });
+   });
+ 
+   it('marks outages as worth retrying', async () => {
+     answer = () => json({ code: 'speech_unavailable' }, { status: 503 });
+-    await assert.rejects(uploadFile('/dictation/', file, { FormDataImpl: FakeForm }), (e: UploadError) => e.canTryAgain === true);
++    await assert.rejects(
++      uploadFile('/dictation/', file, { FormDataImpl: FakeForm }),
++      (e: UploadError) => e.canTryAgain === true,
++    );
+   });
+ 
+   it('does not retry by itself: a second upload would be a second attachment', async () => {
+@@ -80,7 +88,10 @@ describe('uploadFile', () => {
+ 
+   it('reports a refused token and passes network failures through untouched', async () => {
+     answer = () => json({ detail: 'no' }, { status: 401 });
+-    await assert.rejects(uploadFile('/attachments/', file, { FormDataImpl: FakeForm }), (e: ApiError) => e.status === 401);
++    await assert.rejects(
++      uploadFile('/attachments/', file, { FormDataImpl: FakeForm }),
++      (e: ApiError) => e.status === 401,
++    );
+     assert.equal(unauthorized, 1);
+   });
+ 
+@@ -88,8 +99,14 @@ describe('uploadFile', () => {
+     configureApi({
+       baseUrl: 'https://api.test',
+       getToken: async () => null,
+-      fetchImpl: (_url, init) => new Promise((_res, rej) => init?.signal?.addEventListener('abort', () => rej(Object.assign(new Error('x'), { name: 'AbortError' })))),
++      fetchImpl: (_url, init) =>
++        new Promise((_res, rej) =>
++          init?.signal?.addEventListener('abort', () => rej(Object.assign(new Error('x'), { name: 'AbortError' }))),
++        ),
+     });
+-    await assert.rejects(uploadFile('/attachments/', file, { FormDataImpl: FakeForm, timeoutMs: 30 }), (e: ApiError) => e.kind === 'timeout');
++    await assert.rejects(
++      uploadFile('/attachments/', file, { FormDataImpl: FakeForm, timeoutMs: 30 }),
++      (e: ApiError) => e.kind === 'timeout',
++    );
+   });
+ });
+diff --git a/__tests__/uploadMessages.test.ts b/__tests__/uploadMessages.test.ts
+index 97f0708..7e4946d 100644
+--- a/__tests__/uploadMessages.test.ts
++++ b/__tests__/uploadMessages.test.ts
+@@ -4,11 +4,33 @@ import { KNOWN_CODES, canTryAgain, messageForCode } from '../lib/media/uploadMes
+ 
+ /** The codes the Django views and services can send (attachments/*.py). If the server gains a code, add it here. */
+ const SERVER_CODES = [
+-  'no_file', 'file_too_large', 'unsupported_type', 'heic_not_supported', 'daily_upload_limit', 'storage_quota_exceeded',
+-  'unreadable_image', 'image_too_many_pixels', 'image_too_complex', 'unreadable_pdf', 'pdf_encrypted', 'pdf_too_many_pages',
+-  'bad_page_range', 'unreadable_audio', 'audio_too_long', 'audio_processing_timeout', 'no_speech_found', 'speech_unavailable',
+-  'provider_rejected', 'provider_config', 'provider_unavailable', 'internal_error', 'too_many_attachments',
+-  'attachment_not_found', 'attachment_not_ready', 'nothing_to_say', 'bad_part',
++  'no_file',
++  'file_too_large',
++  'unsupported_type',
++  'heic_not_supported',
++  'daily_upload_limit',
++  'storage_quota_exceeded',
++  'unreadable_image',
++  'image_too_many_pixels',
++  'image_too_complex',
++  'unreadable_pdf',
++  'pdf_encrypted',
++  'pdf_too_many_pages',
++  'bad_page_range',
++  'unreadable_audio',
++  'audio_too_long',
++  'audio_processing_timeout',
++  'no_speech_found',
++  'speech_unavailable',
++  'provider_rejected',
++  'provider_config',
++  'provider_unavailable',
++  'internal_error',
++  'too_many_attachments',
++  'attachment_not_found',
++  'attachment_not_ready',
++  'nothing_to_say',
++  'bad_part',
+ ];
+ 
+ describe('messageForCode', () => {
+@@ -17,7 +39,8 @@ describe('messageForCode', () => {
+   });
+ 
+   it('never shows a raw code or technical word to the user', () => {
+-    for (const code of KNOWN_CODES) assert.doesNotMatch(messageForCode(code), /_|[0-9]{3}|undefined|null|exception/i, code);
++    for (const code of KNOWN_CODES)
++      assert.doesNotMatch(messageForCode(code), /_|[0-9]{3}|undefined|null|exception/i, code);
+   });
+ 
+   it('falls back to a calm generic sentence for anything unknown', () => {
+diff --git a/components/AttachmentPicker.tsx b/components/AttachmentPicker.tsx
+index 225fe08..edec7ab 100644
+--- a/components/AttachmentPicker.tsx
++++ b/components/AttachmentPicker.tsx
+@@ -31,7 +31,8 @@ export function AttachmentPicker({ onFile, disabled }: Props) {
+     const result = await DocumentPicker.getDocumentAsync({ type: 'application/pdf', copyToCacheDirectory: true });
+     const asset = result.canceled ? undefined : result.assets[0];
+     if (!asset) return;
+-    if (asset.size && asset.size > MEDIA_LIMITS.maxPdfBytes) return Alert.alert('That PDF is too large', 'Choose a smaller file or fewer pages.');
++    if (asset.size && asset.size > MEDIA_LIMITS.maxPdfBytes)
++      return Alert.alert('That PDF is too large', 'Choose a smaller file or fewer pages.');
+     onFile({ uri: asset.uri, name: asset.name, mimeType: 'application/pdf' });
+   };
+ 
+@@ -42,7 +43,14 @@ export function AttachmentPicker({ onFile, disabled }: Props) {
+         ['Camera', fromCamera],
+         ['PDF', fromFiles],
+       ].map(([label, handler]) => (
+-        <Pressable key={label as string} accessibilityRole="button" accessibilityLabel={`Attach ${String(label)}`} disabled={disabled} onPress={() => void (handler as () => Promise<void>)()} style={[styles.button, disabled && styles.disabled]}>
++        <Pressable
++          key={label as string}
++          accessibilityRole="button"
++          accessibilityLabel={`Attach ${String(label)}`}
++          disabled={disabled}
++          onPress={() => void (handler as () => Promise<void>)()}
++          style={[styles.button, disabled && styles.disabled]}
++        >
+           <Text style={styles.text}>{label as string}</Text>
+         </Pressable>
+       ))}
+@@ -52,7 +60,16 @@ export function AttachmentPicker({ onFile, disabled }: Props) {
+ 
+ const styles = StyleSheet.create({
+   row: { flexDirection: 'row', gap: 8, padding: 8 },
+-  button: { minHeight: 44, minWidth: 72, alignItems: 'center', justifyContent: 'center', borderRadius: 12, borderWidth: 1, borderColor: '#D1D5DB', paddingHorizontal: 12 },
++  button: {
++    minHeight: 44,
++    minWidth: 72,
++    alignItems: 'center',
++    justifyContent: 'center',
++    borderRadius: 12,
++    borderWidth: 1,
++    borderColor: '#D1D5DB',
++    paddingHorizontal: 12,
++  },
+   disabled: { opacity: 0.4 },
+   text: { fontWeight: '600', color: '#1D4ED8' },
+ });
+diff --git a/components/DictationButton.tsx b/components/DictationButton.tsx
+index 00a375e..fe05c24 100644
+--- a/components/DictationButton.tsx
++++ b/components/DictationButton.tsx
+@@ -1,5 +1,4 @@
+-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
+-import { Linking } from 'react-native';
++import { ActivityIndicator, Pressable, StyleSheet, Text, View, Linking } from 'react-native';
+ import { useDictation } from '../hooks/useDictation';
+ 
+ /** A microphone button for the composer. Tap to talk, tap again to stop; the words land in the text box. */
+@@ -11,12 +10,25 @@ export function DictationButton({ onText }: { onText: (text: string) => void })
+   return (
+     <View>
+       <View style={styles.row}>
+-        <Pressable accessibilityRole="button" accessibilityLabel={label} disabled={busy} onPress={press} style={[styles.button, state.phase === 'recording' && styles.recording]}>
+-          {busy ? <ActivityIndicator color="#FFFFFF" /> : <Text style={styles.icon}>{state.phase === 'recording' ? '■' : '🎤'}</Text>}
++        <Pressable
++          accessibilityRole="button"
++          accessibilityLabel={label}
++          disabled={busy}
++          onPress={press}
++          style={[styles.button, state.phase === 'recording' && styles.recording]}
++        >
++          {busy ? (
++            <ActivityIndicator color="#FFFFFF" />
++          ) : (
++            <Text style={styles.icon}>{state.phase === 'recording' ? '■' : '🎤'}</Text>
++          )}
+         </Pressable>
+         {state.phase === 'recording' ? (
+           <>
+-            <Text accessibilityLiveRegion="polite" style={styles.timer}>{`0:${String(state.seconds).padStart(2, '0')}`}</Text>
++            <Text
++              accessibilityLiveRegion="polite"
++              style={styles.timer}
++            >{`0:${String(state.seconds).padStart(2, '0')}`}</Text>
+             <Pressable accessibilityRole="button" onPress={cancel} hitSlop={8}>
+               <Text style={styles.cancel}>Cancel</Text>
+             </Pressable>
+@@ -39,7 +51,14 @@ export function DictationButton({ onText }: { onText: (text: string) => void })
+ 
+ const styles = StyleSheet.create({
+   row: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+-  button: { width: 48, height: 48, borderRadius: 24, alignItems: 'center', justifyContent: 'center', backgroundColor: '#1D4ED8' },
++  button: {
++    width: 48,
++    height: 48,
++    borderRadius: 24,
++    alignItems: 'center',
++    justifyContent: 'center',
++    backgroundColor: '#1D4ED8',
++  },
+   recording: { backgroundColor: '#B91C1C' },
+   icon: { fontSize: 20, color: '#FFFFFF' },
+   timer: { fontVariant: ['tabular-nums'], fontSize: 16 },
+diff --git a/components/QrScanner.tsx b/components/QrScanner.tsx
+index a8142f1..75efcc2 100644
+--- a/components/QrScanner.tsx
++++ b/components/QrScanner.tsx
+@@ -55,6 +55,13 @@ const styles = StyleSheet.create({
+   fill: { flex: 1 },
+   center: { alignItems: 'center', justifyContent: 'center', gap: 12, padding: 24 },
+   message: { fontSize: 16, textAlign: 'center' },
+-  button: { minHeight: 44, paddingHorizontal: 20, borderRadius: 12, backgroundColor: '#1D4ED8', alignItems: 'center', justifyContent: 'center' },
++  button: {
++    minHeight: 44,
++    paddingHorizontal: 20,
++    borderRadius: 12,
++    backgroundColor: '#1D4ED8',
++    alignItems: 'center',
++    justifyContent: 'center',
++  },
+   buttonText: { color: '#FFFFFF', fontWeight: '600' },
+ });
+diff --git a/eslint.config.js b/eslint.config.js
+new file mode 100644
+index 0000000..5a8445c
+--- /dev/null
++++ b/eslint.config.js
+@@ -0,0 +1,5 @@
++// ESLint 9 and 10 read only this "flat" file. Expo ships a ready-made config.
++const { defineConfig } = require('eslint/config');
++const expoConfig = require('eslint-config-expo/flat');
++
++module.exports = defineConfig([expoConfig, { ignores: ['dist/*', 'node_modules/*', '.expo/*'] }]);
+diff --git a/hooks/useAttachments.ts b/hooks/useAttachments.ts
+index eec3205..ff3447b 100644
+--- a/hooks/useAttachments.ts
++++ b/hooks/useAttachments.ts
+@@ -56,7 +56,10 @@ export function useAttachments() {
+     [items.length, patch],
+   );
+ 
+-  const remove = useCallback((localId: string) => setItems((current) => current.filter((i) => i.localId !== localId)), []);
++  const remove = useCallback(
++    (localId: string) => setItems((current) => current.filter((i) => i.localId !== localId)),
++    [],
++  );
+   const readyIds = items.filter((i) => i.stage === 'ready' && i.id).map((i) => i.id as string);
+   const busy = items.some((i) => i.stage === 'uploading' || i.stage === 'processing');
+ 
+diff --git a/hooks/useDictation.ts b/hooks/useDictation.ts
+index 2931862..839c874 100644
+--- a/hooks/useDictation.ts
++++ b/hooks/useDictation.ts
+@@ -1,7 +1,12 @@
+ import { requestRecordingPermissionsAsync, setAudioModeAsync, useAudioRecorder } from 'expo-audio';
+ import { useCallback, useEffect, useReducer } from 'react';
+ import { userMessage } from '../lib/net/errors';
+-import { dictationReducer, initialDictation, type DictationEvent, type DictationState } from '../lib/media/dictationState';
++import {
++  dictationReducer,
++  initialDictation,
++  type DictationEvent,
++  type DictationState,
++} from '../lib/media/dictationState';
+ import { SPEECH_RECORDING } from '../lib/media/recording';
+ import { UploadError, uploadFile } from '../lib/media/upload';
+ 
+@@ -58,13 +63,21 @@ export function useDictation(onText: (text: string) => void) {
+         await setAudioModeAsync({ allowsRecording: false });
+         const uri = recorder.uri;
+         if (!uri) throw new Error('no recording');
+-        const { text } = await uploadFile('/dictation/', { uri, name: 'dictation.m4a', mimeType: 'audio/mp4' }, { signal: controller.signal, timeoutMs: 45_000, parse: parseText });
++        const { text } = await uploadFile(
++          '/dictation/',
++          { uri, name: 'dictation.m4a', mimeType: 'audio/mp4' },
++          { signal: controller.signal, timeoutMs: 45_000, parse: parseText },
++        );
+         dispatch({ type: 'uploaded', text });
+         onText(text);
+       } catch (error) {
+         if (controller.signal.aborted) return;
+         const known = error instanceof UploadError;
+-        dispatch({ type: 'failed', message: known ? error.message : userMessage(error), canTryAgain: known ? error.canTryAgain : true });
++        dispatch({
++          type: 'failed',
++          message: known ? error.message : userMessage(error),
++          canTryAgain: known ? error.canTryAgain : true,
++        });
+       }
+     })();
+     return () => controller.abort(); // cancelled or unmounted: the answer is no longer wanted
+diff --git a/hooks/useReadAloud.ts b/hooks/useReadAloud.ts
+index cdabfd8..3f57a90 100644
+--- a/hooks/useReadAloud.ts
++++ b/hooks/useReadAloud.ts
+@@ -4,34 +4,39 @@ import { useCallback, useEffect, useRef, useState } from 'react';
+ import { apiRequest, getApiConfig } from '../lib/api/client';
+ import { splitForSpeech, toSpeakable } from '../lib/media/speakable';
+ 
++/**
++ * Speak the pieces one after another. A plain function, not a hook: it needs to call itself from the
++ * speech engine's callback, and a hook cannot safely refer to a value that is still being created.
++ */
++function speakChunks(
++  chunks: string[],
++  language: string | undefined,
++  isCurrent: () => boolean,
++  onEnd: () => void,
++): void {
++  const queue = [...chunks];
++  const finish = () => {
++    if (isCurrent()) onEnd();
++  };
++  const step = (): void => {
++    if (!isCurrent()) return; // Stop was pressed, or a newer reading started
++    const text = queue.shift();
++    if (text === undefined) return finish();
++    Speech.speak(text, { language, onDone: step, onStopped: finish, onError: finish });
++  };
++  step();
++}
++
+ /**
+  * Read a reply aloud with the phone's own voice: free, private, works offline, and no vendor can retire it.
+  * The text is cleaned and cut at sentence ends because speech engines refuse text above a maximum length.
+  */
+ export function useDeviceSpeech() {
+   const [speaking, setSpeaking] = useState(false);
+-  const queue = useRef<string[]>([]);
+   const generation = useRef(0); // stop() bumps it, so callbacks from the old reading are ignored
+ 
+-  const next = useCallback((id: number, language?: string) => {
+-    if (id !== generation.current) return;
+-    const text = queue.current.shift();
+-    if (text === undefined) return setSpeaking(false);
+-    Speech.speak(text, {
+-      language,
+-      onDone: () => next(id, language),
+-      onStopped: () => {
+-        if (id === generation.current) setSpeaking(false);
+-      },
+-      onError: () => {
+-        if (id === generation.current) setSpeaking(false);
+-      },
+-    });
+-  }, []);
+-
+   const stop = useCallback(() => {
+     generation.current++;
+-    queue.current = [];
+     Speech.stop();
+     setSpeaking(false);
+   }, []);
+@@ -39,12 +44,18 @@ export function useDeviceSpeech() {
+   const speak = useCallback(
+     (markdown: string, language?: string) => {
+       stop();
+-      queue.current = splitForSpeech(toSpeakable(markdown), Math.min(Speech.maxSpeechInputLength, 3000));
+-      if (queue.current.length === 0) return;
++      const chunks = splitForSpeech(toSpeakable(markdown), Math.min(Speech.maxSpeechInputLength, 3000));
++      if (chunks.length === 0) return;
++      const id = generation.current;
+       setSpeaking(true);
+-      next(generation.current, language);
++      speakChunks(
++        chunks,
++        language,
++        () => id === generation.current,
++        () => setSpeaking(false),
++      );
+     },
+-    [next, stop],
++    [stop],
+   );
+ 
+   useEffect(() => stop, [stop]); // leaving the screen silences the voice
+@@ -65,7 +76,10 @@ export function useServerSpeech(messageId: string) {
+       void getToken().then((token) => {
+         part.current = index;
+         // expo-audio can send headers with a remote source, so the protected endpoint is streamed directly
+-        player.replace({ uri: `${baseUrl}/messages/${messageId}/speech/?part=${index}`, headers: token ? { Authorization: `Bearer ${token}` } : {} });
++        player.replace({
++          uri: `${baseUrl}/messages/${messageId}/speech/?part=${index}`,
++          headers: token ? { Authorization: `Bearer ${token}` } : {},
++        });
+         player.play();
+       });
+     },
+diff --git a/lib/cv/geometry.ts b/lib/cv/geometry.ts
+index 5082d2a..c8cdfb9 100644
+--- a/lib/cv/geometry.ts
++++ b/lib/cv/geometry.ts
+@@ -46,7 +46,10 @@ export interface NmsOptions {
+  * boxes. Keep the highest score, drop its near-duplicates, repeat. Only boxes with the SAME label compete:
+  * a "cup" box overlapping a "table" box is not a duplicate.
+  */
+-export function nms(detections: Detection[], { scoreThreshold = 0.3, iouThreshold = 0.5, maxDetections = 20 }: NmsOptions = {}): Detection[] {
++export function nms(
++  detections: Detection[],
++  { scoreThreshold = 0.3, iouThreshold = 0.5, maxDetections = 20 }: NmsOptions = {},
++): Detection[] {
+   const candidates = detections.filter((d) => d.score >= scoreThreshold).sort((a, b) => b.score - a.score);
+   const kept: Detection[] = [];
+   for (const candidate of candidates) {
+@@ -64,10 +67,18 @@ export function nms(detections: Detection[], { scoreThreshold = 0.3, iouThreshol
+  * `frame` must be the size of the image in DISPLAY orientation (after rotation).
+  */
+ export function mapBoxToView(box: Box, frame: Size, view: Size, fit: 'cover' | 'contain', mirrored = false): Box {
+-  const scale = fit === 'cover' ? Math.max(view.width / frame.width, view.height / frame.height) : Math.min(view.width / frame.width, view.height / frame.height);
++  const scale =
++    fit === 'cover'
++      ? Math.max(view.width / frame.width, view.height / frame.height)
++      : Math.min(view.width / frame.width, view.height / frame.height);
+   const offsetX = (view.width - frame.width * scale) / 2;
+   const offsetY = (view.height - frame.height * scale) / 2;
+-  const mapped = { x: box.x * scale + offsetX, y: box.y * scale + offsetY, width: box.width * scale, height: box.height * scale };
++  const mapped = {
++    x: box.x * scale + offsetX,
++    y: box.y * scale + offsetY,
++    width: box.width * scale,
++    height: box.height * scale,
++  };
+   return mirrored ? { ...mapped, x: view.width - (mapped.x + mapped.width) } : mapped; // a selfie camera is mirrored
+ }
+ 
+diff --git a/lib/cv/scan.ts b/lib/cv/scan.ts
+index 6fbe119..b33fb4b 100644
+--- a/lib/cv/scan.ts
++++ b/lib/cv/scan.ts
+@@ -17,7 +17,8 @@ export function parseScannedUrl(data: string, allowedHosts: string[]): ScanResul
+   if (authority.includes('@')) return { ok: false, reason: 'contains a user name' };
+   const [host, port, ...extra] = authority.toLowerCase().split(':');
+   if (extra.length > 0 || (port !== undefined && port !== '443')) return { ok: false, reason: 'unusual port' };
+-  if (!/^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$/.test(host)) return { ok: false, reason: 'not a plain host name' };
++  if (!/^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$/.test(host))
++    return { ok: false, reason: 'not a plain host name' };
+ 
+   const allowed = allowedHosts.some((h) => host === h.toLowerCase() || host.endsWith(`.${h.toLowerCase()}`));
+   return allowed ? { ok: true, url: text } : { ok: false, reason: 'host is not on the allow-list' };
+diff --git a/lib/media/dictationState.ts b/lib/media/dictationState.ts
+index 8cdc0fb..53d162e 100644
+--- a/lib/media/dictationState.ts
++++ b/lib/media/dictationState.ts
+@@ -27,7 +27,11 @@ export const initialDictation: DictationState = { phase: 'idle', seconds: 0 };
+  * network answer is an event, so impossible situations (recording twice, uploading while recording,
+  * a late answer after cancelling) cannot happen: events that make no sense in a state are ignored.
+  */
+-export function dictationReducer(state: DictationState, event: DictationEvent, maxSeconds: number = MEDIA_LIMITS.maxDictationSeconds): DictationState {
++export function dictationReducer(
++  state: DictationState,
++  event: DictationEvent,
++  maxSeconds: number = MEDIA_LIMITS.maxDictationSeconds,
++): DictationState {
+   switch (state.phase) {
+     case 'idle':
+     case 'error':
+@@ -37,7 +41,15 @@ export function dictationReducer(state: DictationState, event: DictationEvent, m
+       if (event.type === 'permission') {
+         return event.granted
+           ? { phase: 'recording', seconds: 0 }
+-          : { phase: 'error', seconds: 0, error: { message: 'We need microphone access to hear you. You can allow it in Settings.', canTryAgain: false, needsSettings: true } };
++          : {
++              phase: 'error',
++              seconds: 0,
++              error: {
++                message: 'We need microphone access to hear you. You can allow it in Settings.',
++                canTryAgain: false,
++                needsSettings: true,
++              },
++            };
+       }
+       return event.type === 'cancel' ? initialDictation : state;
+ 
+@@ -51,7 +63,8 @@ export function dictationReducer(state: DictationState, event: DictationEvent, m
+ 
+     case 'uploading':
+       if (event.type === 'uploaded') return { phase: 'idle', seconds: 0, text: event.text };
+-      if (event.type === 'failed') return { phase: 'error', seconds: 0, error: { message: event.message, canTryAgain: event.canTryAgain } };
++      if (event.type === 'failed')
++        return { phase: 'error', seconds: 0, error: { message: event.message, canTryAgain: event.canTryAgain } };
+       return event.type === 'cancel' ? initialDictation : state; // presses while uploading are ignored
+   }
+ }
+diff --git a/lib/media/upload.ts b/lib/media/upload.ts
+index 0372b68..ce453b6 100644
+--- a/lib/media/upload.ts
++++ b/lib/media/upload.ts
+@@ -56,7 +56,11 @@ export interface UploadOptions<T> {
+  * - is NOT retried automatically: a repeated upload is a second attachment. The user taps "Try again".
+  * - turns the server's refusal codes into a plain sentence
+  */
+-export async function uploadFile<T = unknown>(path: string, file: LocalFile, options: UploadOptions<T> = {}): Promise<T> {
++export async function uploadFile<T = unknown>(
++  path: string,
++  file: LocalFile,
++  options: UploadOptions<T> = {},
++): Promise<T> {
+   const { baseUrl, getToken, onUnauthorized, fetchImpl } = getApiConfig();
+   const token = await getToken();
+   try {
+@@ -71,7 +75,10 @@ export async function uploadFile<T = unknown>(path: string, file: LocalFile, opt
+     });
+   } catch (error) {
+     if (isUnauthorized(error)) onUnauthorized?.();
+-    const code = error instanceof ApiError && error.kind === 'http' ? (error.body as { code?: unknown } | undefined)?.code : undefined;
++    const code =
++      error instanceof ApiError && error.kind === 'http'
++        ? (error.body as { code?: unknown } | undefined)?.code
++        : undefined;
+     if (typeof code === 'string') throw new UploadError(code, messageForCode(code), canTryAgain(code));
+     throw error; // network, timeout and the rest: the screen shows userMessage(error)
+   }
+diff --git a/lib/media/uploadMessages.ts b/lib/media/uploadMessages.ts
+index 99be5d7..e5d545c 100644
+--- a/lib/media/uploadMessages.ts
++++ b/lib/media/uploadMessages.ts
+@@ -8,7 +8,7 @@ const MESSAGES: Record<string, string> = {
+   file_too_large: 'That file is too large. Try a smaller one.',
+   unsupported_type: 'That type of file is not supported. You can share pictures, PDFs and voice recordings.',
+   heic_not_supported: 'That photo is in a format we cannot read yet. Please share it as a JPEG.',
+-  daily_upload_limit: 'You have reached today\'s upload limit. Please try again tomorrow.',
++  daily_upload_limit: "You have reached today's upload limit. Please try again tomorrow.",
+   storage_quota_exceeded: 'Your storage is full. Delete some files and try again.',
+   unreadable_image: 'We could not read that picture. It may be damaged.',
+   image_too_many_pixels: 'That picture is enormous. Please share a smaller version.',
+@@ -42,6 +42,11 @@ export function messageForCode(code: unknown): string {
+ }
+ 
+ /** Codes where trying the same thing again a little later can succeed. */
+-const RETRY_LATER = new Set(['speech_unavailable', 'provider_unavailable', 'audio_processing_timeout', 'internal_error']);
++const RETRY_LATER = new Set([
++  'speech_unavailable',
++  'provider_unavailable',
++  'audio_processing_timeout',
++  'internal_error',
++]);
+ 
+ export const canTryAgain = (code: unknown): boolean => typeof code === 'string' && RETRY_LATER.has(code);

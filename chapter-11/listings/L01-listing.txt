@@ -1,0 +1,11 @@
+backend/
+  manage.py                  <- the command-line entry point: runserver, migrate, test...
+  requirements.txt
+  config/
+    settings.py              <- all configuration
+    urls.py                  <- the root URL table
+    asgi.py, wsgi.py         <- entry points for web servers
+  core/                      <- infrastructure shared by everything
+  accounts/                  <- users and (later) authentication
+  chat/                      <- the first business module
+    models.py  admin.py  tests.py  views.py  apps.py  migrations/

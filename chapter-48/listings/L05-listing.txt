@@ -1,0 +1,30 @@
+You are in the web lane of docs/specs/share-conversation.md. Do T5, T6 and T7 of the
+  task
+list one at a time, one commit each, stopping after each for review.
+
+Context: the contract is contracts/openapi.json (do not edit it). Existing patterns
+  are in
+web/src/features/chat/ and web/src/lib/api/. Follow CLAUDE.md.
+
+Constraints:
+- Edit only web/. Never edit web/src/lib/api/generated; regenerate with npm run
+  api:types.
+- All API calls go through web/src/lib/api/ using the generated types. No
+  hand-written fetch
+  to a URL of ours in components.
+- T6: ShareDialog (client component): choose a lifetime, create, show the URL ONCE
+  with a
+  copy button, list links with state and view count, revoke active links. Tell the
+    owner that
+  anyone with the link can read the conversation up to now.
+- T7: app/s/[token]/page.tsx is a SERVER component. cache: 'no-store', robots
+  noindex,
+  referrer no-referrer, notFound() on a 404 from the API. Render message text as
+    text,
+  never as HTML. No sign-in required, no owner information shown.
+- Accessibility: dialog role and label, labelled select, alert for errors, keyboard
+  usable.
+
+Acceptance: component tests for AC-1, 2, 5, 11, 13 whose titles contain the AC id.
+Verify: npm run lint && npm run typecheck && npm test, then the spec-to-test trace
+  check.

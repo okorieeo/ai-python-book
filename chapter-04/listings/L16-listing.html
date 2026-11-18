@@ -1,0 +1,14 @@
+<!-- index.html -->
+<button id="btn">Click me</button>
+<p id="output"></p>
+
+<script>
+  const button = document.querySelector("#btn");
+  const output = document.querySelector("#output");
+  let clicks = 0;
+
+  button.addEventListener("click", () => {
+    clicks++;
+    output.textContent = `Clicked ${clicks} times`;
+  });
+</script>

@@ -1,0 +1,13 @@
+# Install with:  crontab -e   (as the deployment user from Chapter 53, not root)
+# Every job pings an outside monitor, so SILENCE (cron stopped, server dead) alarms.
+BACKUP_AGE_RECIPIENT=age1replacewithyourpublickey
+BACKUP_HEARTBEAT_URL=https://hc-ping.com/replace-with-your-uuid
+
+# 03:15 every day: back up PostgreSQL
+15 3 * * * cd /srv/ai-chat && python3 ops/backup.py >> /var/log/ai-chat-backup.log 2>&1
+
+LOGALERTS_PING_URL=https://hc-ping.com/replace-with-another-uuid
+
+# every 5 minutes: look for attack and error patterns in the last 15 minutes of logs.
+# Quiet -> success ping; alerts -> /fail ping carrying the alert text (see check_logs.sh).
+*/5 * * * * /srv/ai-chat/ops/check_logs.sh

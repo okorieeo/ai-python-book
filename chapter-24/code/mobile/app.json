@@ -1,0 +1,21 @@
+{
+  "expo": {
+    "scheme": "aichat",
+    "ios": { "bundleIdentifier": "com.yourname.aichat" },
+    "android": { "package": "com.yourname.aichat" },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      ["expo-notifications", { "color": "#1D4ED8", "defaultChannel": "default" }],
+      ["expo-image-picker", {
+        "photosPermission": "Choose a profile photo or a document to upload.",
+        "cameraPermission": "Take a photo of a document or a profile picture.",
+        "microphonePermission": false
+      }],
+      ["expo-camera", {
+        "cameraPermission": "Photograph documents you choose to upload.",
+        "recordAudioAndroid": false
+      }]
+    ]
+  }
+}

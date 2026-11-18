@@ -1,0 +1,18 @@
+app/
+  layout.tsx                  root layout: <html> and <body>, required
+  (marketing)/                a route group: the folder name is NOT part of the URL
+    layout.tsx                header shared by the public pages
+    page.tsx                  /
+    pricing/page.tsx          /pricing
+  (app)/
+    layout.tsx                the app shell: sidebar + main area
+    chat/
+      page.tsx                /chat
+      [id]/                   a dynamic segment: /chat/welcome, /chat/42 ...
+        page.tsx              the conversation
+        loading.tsx           skeleton while it loads
+        not-found.tsx         unknown id
+        error.tsx             unexpected failure
+  api/conversations/
+    route.ts                  GET and POST /api/conversations
+    [id]/messages/route.ts    POST /api/conversations/{id}/messages

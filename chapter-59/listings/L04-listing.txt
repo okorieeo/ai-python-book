@@ -1,0 +1,40 @@
+def _score(task: PlannableTask, now: datetime, tz: ZoneInfo) -> RankedTask:
+    w = WEIGHTS
+    score = task.priority * w["per_priority_level"]
+    reasons = [f"priority {task.priority} of 4"]
+
+    if task.due_at is not None:
+        days_left = (to_local(task.due_at, tz).date() - to_local(now, tz).date()).days
+        if task.due_at < now and days_left < 0:
+            days_over = min(-days_left, w["overdue_max_days"])
+            score += w["overdue_base"] + days_over * w["overdue_per_day"]
+            reasons.append(f"overdue by {-days_left} day{'s' if -days_left != 1 else
+              ↪ ''}")
+        elif task.due_at < now:  # earlier today, still open
+            score += w["overdue_base"]
+            reasons.append("was due earlier today")
+        elif days_left == 0:
+            score += w["due_today"]
+            reasons.append("due today")
+        elif days_left == 1:
+            score += w["due_tomorrow"]
+            reasons.append("due tomorrow")
+        elif days_left <= 3:
+            score += w["due_within_3_days"]
+            reasons.append(f"due in {days_left} days")
+        elif days_left <= 7:
+            score += w["due_within_7_days"]
+            reasons.append(f"due in {days_left} days")
+        else:
+            score += w["due_later"]
+
+    if task.estimate_minutes is not None and task.estimate_minutes <=
+      ↪ w["quick_win_minutes"]:
+        score += w["quick_win_bonus"]
+        reasons.append("quick win")
+
+    if task.created_at is not None:
+        age_days = min(max((now - task.created_at).days, 0), w["age_max_days"])
+        score += age_days * w["age_per_day"]  # stops old tasks from starving
+
+    return RankedTask(task, round(score, 2), tuple(reasons))

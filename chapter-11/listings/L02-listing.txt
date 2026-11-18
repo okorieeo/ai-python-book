@@ -1,0 +1,16 @@
+python manage.py shell
+
+>>> from django.contrib.auth import get_user_model
+>>> from chat.models import Conversation, Message
+>>> User = get_user_model()
+
+>>> ada = User.objects.create_user("ada@example.com", "a-long-password")
+>>> conv = Conversation.objects.create(user=ada, title="Learning Django")
+>>> Message.objects.create(conversation=conv, role="user", content="Hello")
+<Message: user: Hello>
+
+>>> conv.messages.count()                       # reverse relation from related_name
+1
+>>> Conversation.objects.filter(user=ada).values_list("title", flat=True)
+<QuerySet ['Learning Django']>
+>>> print(Conversation.objects.filter(user=ada).query)     # see the SQL Django will run

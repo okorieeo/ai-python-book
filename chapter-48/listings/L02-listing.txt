@@ -1,0 +1,23 @@
+Task T9. Add what the sharing feature needs to run locally in Docker and in CI. Read
+docker-compose.yml, both Dockerfiles and .github/workflows/ci.yml first. Change only
+  these files.
+
+Requirements:
+- backend and web Dockerfiles: multi-stage, pinned base image tags, non-root user, a
+  HEALTHCHECK on the backend, no secrets in the image, a .dockerignore that excludes
+    .env.
+- Compose: postgres and redis with healthchecks; backend, celery and web wait for
+  the
+  healthy services; secrets come from .env (never inline); only web and backend
+    publish ports.
+- The web container reaches the API at http://backend:8000 on the server side, and
+  the
+  browser at http://localhost:8000 (two different variables).
+- CI jobs: contract (lint, diff against main, trace_check), backend, web, mobile,
+  sync, docker.
+  Regenerate the API types in web and mobile and fail if git shows a difference.
+  Compare the schema generated from the Django code with contracts/openapi.json
+    (--strict).
+- Use least-privilege workflow permissions and pin each action to a major version.
+Explain every choice you made that I did not ask for. Do not run docker or push
+  anything.

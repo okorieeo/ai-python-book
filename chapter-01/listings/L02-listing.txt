@@ -1,0 +1,9 @@
+Weak prompt:
+  "Fix this error."
+
+Strong prompt:
+  "I'm a beginner learning Django 5 with PostgreSQL. I ran 'python manage.py migrate'
+   and got the error below. Please (1) explain in simple words what it means,
+   (2) list the most likely causes in order, and (3) show me how to check each one.
+   Do not rewrite my whole project.
+   <paste full error and relevant settings.py section with passwords removed>"

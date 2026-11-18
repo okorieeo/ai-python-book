@@ -1,0 +1,13 @@
+// /etc/apt/apt.conf.d/52unattended-upgrades-local   (Chapter 53)
+// Our overrides live in their own file so package upgrades never overwrite them.
+
+Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";
+Unattended-Upgrade::Remove-Unused-Dependencies "true";
+
+// Reboots cause a minute of downtime. Start with "false" and check /var/run/reboot-required
+// yourself (the audit script reports it). Switch to "true" once you accept a nightly window.
+Unattended-Upgrade::Automatic-Reboot "false";
+Unattended-Upgrade::Automatic-Reboot-Time "04:00";
+
+// Optional e-mail report (needs a working mail setup):
+// Unattended-Upgrade::Mail "you@example.com";

@@ -1,0 +1,4 @@
+{"type": "token", "content": "Hel"}
+{"type": "token", "content": "lo"}
+{"type": "done",  "message_id": 301, "input_tokens": 212, "output_tokens": 184}
+{"type": "error", "code": "model_unavailable"}

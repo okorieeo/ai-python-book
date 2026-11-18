@@ -1,0 +1,38 @@
+# Fast checks that run on the files you are about to commit. Everything here is repeated in CI (the real gate).
+default_install_hook_types: [pre-commit]
+fail_fast: false
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: ["--maxkb=500"]
+      - id: detect-private-key
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.17.4
+    hooks:
+      - id: ruff-check
+        args: ["--fix", "--exit-non-zero-on-fix"]
+        files: ^backend/
+      - id: ruff-format
+        files: ^backend/
+
+  - repo: local
+    hooks:
+      - id: prettier
+        name: prettier
+        language: system
+        entry: bash -c 'cd mobile && npx --no-install prettier --write "${@#mobile/}"' --
+        files: ^mobile/.*\.(ts|tsx|js|json)$
+      - id: eslint
+        name: eslint
+        language: system
+        entry: bash -c 'cd mobile && npx --no-install eslint --max-warnings=0 "${@#mobile/}"' --
+        files: ^mobile/.*\.(ts|tsx)$

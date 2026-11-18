@@ -1,0 +1,10 @@
+core/timeutils.py            core/test_timeutils.py
+schedule/recurrence.py       schedule/test_recurrence.py
+schedule/availability.py     schedule/test_availability.py
+tasks/planning.py            tasks/test_planning.py
+assistant/untrusted.py       assistant/test_untrusted.py
+assistant/tools.py           assistant/test_tools.py
+assistant/prompt.py          assistant/test_prompt_briefing.py
+assistant/agent.py           assistant/test_agent.py
+assistant/history.py         assistant/test_history.py
+assistant/briefing.py        evals/harness.py, evals/cases.py, evals/test_harness.py

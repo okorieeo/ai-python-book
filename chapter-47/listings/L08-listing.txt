@@ -1,0 +1,12 @@
+break 1: let every request start its own token refresh
+Tests:       1 failed, 79 passed, 80 total
+break 2: sign the user out when the refresh fails for ANY reason, even being offline
+Tests:       1 failed, 79 passed, 80 total
+break 3: retry a POST that has no idempotency key
+Tests:       1 failed, 79 passed, 80 total
+break 4: keep sending the queue after a network failure (loses the order)
+Tests:       1 failed, 79 passed, 80 total
+break 5: stop ignoring events from an old socket
+Tests:       1 failed, 80 passed, 81 total   (after adding a test for a late token lookup)
+restored
+Tests:       81 passed, 81 total

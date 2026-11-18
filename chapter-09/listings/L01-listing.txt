@@ -1,0 +1,11 @@
+When I have to answer a long customer message,
+I want to paste it and get a polite draft reply,
+so I can respond in two minutes instead of twenty.
+
+When my free tokens run out in the middle of a task,
+I want to understand what happened and what it costs to continue,
+so I can decide without losing my work.
+
+When a payment fails,
+I want to be told clearly why and how to fix it,
+so I do not lose access to my conversations.

@@ -1,0 +1,24 @@
+{
+  "expo": {
+    "plugins": [
+      ["expo-camera", {
+        "cameraPermission": "Allow $(PRODUCT_NAME) to use the camera to scan
+            codes.",
+        "microphonePermission": false,
+        "recordAudioAndroid": false
+      }],
+      ["expo-image-picker", {
+        "photosPermission": "Allow $(PRODUCT_NAME) to attach photos you choose to a
+            chat.",
+        "cameraPermission": "Allow $(PRODUCT_NAME) to take a photo to share in a
+            chat.",
+        "microphonePermission": false
+      }],
+      ["expo-audio", {
+        "microphonePermission": "Allow $(PRODUCT_NAME) to use the microphone so you
+            can dictate messages.",
+        "recordAudioAndroid": true
+      }]
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <h1>Tasks</h1>
+    <ul id="list"></ul>
+    <script>
+      async function load() {
+        const response = await fetch("http://localhost:8000/tasks");
+        const tasks = await response.json();
+        document.querySelector("#list").innerHTML = tasks
+          .map((t) => "<li>" + t.title + "</li>")
+          .join("");
+      }
+      load().catch((error) => console.error("Failed:", error));
+    </script>
+  </body>
+</html>

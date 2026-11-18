@@ -1,0 +1,26 @@
+def create_task(*, user, **fields) -> Task:
+    data = _clean(fields)
+    if "title" not in data:
+        raise TaskValidationError("title: is required")
+    return Task.objects.create(user=user, **data)
+
+def update_task(*, user, task: Task, **fields) -> Task:
+    _owned(user, task)
+    data = _clean(fields)
+    for key, value in data.items():
+        setattr(task, key, value)
+    if "status" in data:
+        task.completed_at = timezone.now() if data["status"] == Task.Status.DONE else
+          ↪ None
+    task.save()
+    return task
+
+def complete_task(*, user, task: Task) -> Task:
+    return update_task(user=user, task=task, status=Task.Status.DONE)
+
+def delete_task(*, user, task: Task, request=None) -> None:
+    _owned(user, task)
+    with transaction.atomic():
+        record(Action.TASK_DELETED, request=request, actor=user, target=task,
+          ↪ metadata={"title_length": len(task.title)})
+        task.delete()

@@ -1,0 +1,9 @@
+[+] Building 142.6s (18/18) FINISHED
+ => [builder 4/5] RUN python -m venv /opt/venv
+ => [builder 5/5] RUN --mount=type=cache,target=/root/.cache/pip pip install ...
+ => [runtime 5/8] COPY --from=builder /opt/venv /opt/venv
+ => [runtime 8/8] RUN DJANGO_SECRET_KEY=build-time-placeholder python manage.py ...
+ => exporting to image
+ 
+REPOSITORY        TAG   IMAGE ID       CREATED          SIZE
+ai-chat-backend   dev   9b1e3f0a4c52   10 seconds ago   412MB

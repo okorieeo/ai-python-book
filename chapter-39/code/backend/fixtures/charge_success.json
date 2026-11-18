@@ -1,0 +1,10 @@
+{
+  "event": "charge.success",
+  "data": {
+    "id": 302961,
+    "reference": "ref-fixture-1",
+    "amount": 500000,
+    "currency": "NGN",
+    "status": "success"
+  }
+}

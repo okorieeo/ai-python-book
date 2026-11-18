@@ -1,0 +1,19 @@
+ai-chat-app/
+  README.md
+  .gitignore
+  .env.example           <- documents every setting; the real .env is never committed
+  backend/               <- Django project (Part III)
+  web/                   <- Next.js app (Part IV)
+  mobile/                <- Expo / React Native app (Part V)
+  design/                <- tokens.json and generated tokens (Chapter 9)
+  docs/
+    product-brief.md
+    user-stories.md
+    architecture.md
+    ux/                  <- flows and wireframes
+    decisions/           <- ADRs (Chapter 6)
+    openapi.yaml         <- the API contract (Chapter 8)
+  deploy/                <- Dockerfiles, compose files, Dokploy notes (Part IX)
+  .github/
+    PULL_REQUEST_TEMPLATE.md
+    workflows/           <- CI pipelines (Chapter 42)

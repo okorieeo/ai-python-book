@@ -1,0 +1,7 @@
+port 22
+permitrootlogin yes
+pubkeyauthentication yes
+passwordauthentication yes
+kbdinteractiveauthentication no
+permitemptypasswords no
+maxauthtries 6

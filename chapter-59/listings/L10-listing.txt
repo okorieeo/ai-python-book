@@ -1,0 +1,28 @@
+class ModelTurn:
+    """One reply from the model, in Anthropic's content-block format:
+    {"type": "text", "text": ...} and {"type": "tool_use", "id": ..., "name": ...,
+    "input": {...}}."""
+
+    content: list[dict]
+    stop_reason: str
+    usage: Usage = Usage()
+
+    @property
+    def text(self) -> str:
+        return "".join(b.get("text", "") for b in self.content if b.get("type") ==
+          ↪ "text")
+
+    @property
+    def tool_calls(self) -> list[ToolCall]:
+        return [ToolCall(b["id"], b["name"], b.get("input") or {}) for b in self.content
+          ↪ if b.get("type") == "tool_use"]
+
+class ModelUnavailable(Exception):
+    """A ModelClient raises this for any provider failure (network, rate limit, outage),
+    so callers need no SDK imports."""
+
+class ModelClient(Protocol):
+    def complete(
+        self, *, system: str, messages: list[dict], tools: list[dict], on_text:
+          ↪ Callable[[str], None] | None = None
+    ) -> ModelTurn: ...

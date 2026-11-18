@@ -1,0 +1,13 @@
+documents/
+  models.py        Document (the Chapter 7 table, plus type, size, hash)
+  validation.py    size limits, content sniffing, safe filenames
+  images.py        avatar processing with Pillow
+  storage.py       storage helpers and the S3 client
+  views.py         uploads, downloads, avatars, direct uploads
+notifications/
+  emailing.py      send_templated_email()
+  templates/emails/   base.html, verify_email.*, reset_password.*
+  signing.py       HMAC signatures for webhooks (both directions)
+  inbound.py       receive webhooks from the email provider
+  outbound.py      send webhooks to customers, with retries
+  models.py        EmailSuppression, WebhookEvent, WebhookEndpoint, WebhookDelivery

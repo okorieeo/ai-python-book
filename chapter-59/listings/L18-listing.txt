@@ -1,0 +1,63 @@
+export default function AssistantScreen() {
+  const { state, connected, sendMessage, decide } = useAssistant(SOCKET_URL);
+  const [text, setText] = useState("");
+  const waiting = state.pending.length > 0; // the server refuses new messages until it
+    ↪ is answered
+  const canSend = connected && !state.busy && !waiting && text.trim().length > 0;
+
+  const send = () => {
+    sendMessage(text.trim());
+    setText("");
+  };
+
+  return (
+    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined}
+      ↪ style={styles.fill}>
+      <FlatList
+        data={state.items}
+        keyExtractor={(item) => String(item.id)}
+        contentContainerStyle={styles.list}
+        renderItem={({ item }) => <Bubble item={item} />}
+        ListFooterComponent={
+          <View style={styles.footer}>
+            {state.pending.map((p) => (
+              <View key={p.action_id} accessibilityRole="alert" style={styles.card}>
+                <Text style={styles.cardTitle}>Please confirm</Text>
+                <Text>{p.summary}</Text>
+                <View style={styles.buttons}>
+                  <Pressable accessibilityRole="button" disabled={p.sending}
+                    onPress={() => decide(p.action_id, true)} style={[styles.button,
+                      ↪ styles.danger]}>
+                    <Text style={styles.white}>Yes, do it</Text>
+                  </Pressable>
+                  <Pressable accessibilityRole="button" disabled={p.sending}
+                    onPress={() => decide(p.action_id, false)} style={[styles.button,
+                      ↪ styles.outline]}>
+                    <Text>No, keep it</Text>
+                  </Pressable>
+                </View>
+              </View>
+            ))}
+            {state.error ? <Text accessibilityRole="alert"
+              ↪ style={styles.error}>{state.error}</Text> : null}
+          </View>
+        }
+      />
+      <View style={styles.composer}>
+        <TextInput
+          value={text}
+          onChangeText={setText}
+          maxLength={4000}
+          editable={!waiting}
+          placeholder={waiting ? "Answer the question first" : "Ask me anything"}
+          accessibilityLabel="Message"
+          style={styles.input}
+        />
+        <Pressable accessibilityRole="button" disabled={!canSend} onPress={send}
+          style={[styles.send, canSend ? styles.sendOn : styles.sendOff]}>
+          <Text style={styles.white}>Send</Text>
+        </Pressable>
+      </View>
+    </KeyboardAvoidingView>
+  );
+}

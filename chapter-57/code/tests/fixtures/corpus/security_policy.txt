@@ -1,0 +1,15 @@
+Acme Information Security Policy
+
+Passwords and authentication
+
+Passwords must be at least 14 characters long. Every employee must use the company password manager, and reusing a password across systems is forbidden.
+
+Multi-factor authentication is required for all company systems without exception. Administrators must use hardware security keys. Passwords are rotated only when a compromise is suspected, not on a fixed calendar.Incident reporting
+
+Report any suspected security incident within 1 hour to security@acme.example. Do not turn off an affected computer, because that destroys evidence; disconnect it from the network instead.
+
+Critical incidents are escalated to the CISO within 4 hours. A post-incident review must be completed within 5 business days. If personal data is affected, the regulator must be notified within 72 hours of discovery.Data classification and retention
+
+Data is classified as public, internal, confidential or restricted. Restricted data must be encrypted at rest with AES-256 and may never be copied to personal devices.
+
+Backups are retained for 35 days and audit logs for 12 months. If a laptop or phone is lost or stolen, report it within 2 hours so that it can be wiped remotely.

@@ -1,0 +1,5 @@
+# Shell scripts must keep Unix line endings, or the container fails with
+# "exec ... no such file or directory" when a Windows checkout adds \r.
+*.sh text eol=lf
+Dockerfile text eol=lf
+*.py text eol=lf

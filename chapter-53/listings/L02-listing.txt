@@ -1,0 +1,12 @@
+==> 1/8 Update packages and install tools
+[dry-run] apt-get update
+[dry-run] env DEBIAN_FRONTEND=noninteractive apt-get -y upgrade
+[dry-run] env DEBIAN_FRONTEND=noninteractive apt-get -y install ufw fail2ban unattended-upgrades curl ca-certificates
+
+==> 2/8 Timezone
+[dry-run] timedatectl set-timezone UTC
+
+==> 3/8 Administrator account 'deploy'
+[dry-run] adduser --disabled-password --gecos '' deploy
+Set a password for deploy (needed for sudo):
+[dry-run] passwd deploy

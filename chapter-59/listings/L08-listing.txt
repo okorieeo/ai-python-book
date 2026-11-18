@@ -1,0 +1,27 @@
+def occurrences_between(*, user, start: datetime, end: datetime, ignore: Event | None =
+  ↪ None) -> list[EventOccurrence]:
+    """Every occurrence overlapping [start, end), repeats expanded, earliest first."""
+    if end <= start or end - start > MAX_WINDOW:
+        raise EventValidationError("The time range must be positive and at most 400
+          ↪ days.")
+    base = Event.objects.filter(user=user)
+    if ignore is not None:
+        base = base.exclude(pk=ignore.pk)
+    found = [
+        EventOccurrence(e, e.start_at, e.end_at, False)
+        for e in base.filter(recurrence__isnull=True, start_at__lt=end,
+          ↪ end_at__gt=start)
+    ]
+    for e in base.filter(recurrence__isnull=False, start_at__lt=end)[:MAX_REPEATING_EVEN
+      ↪ TS_PER_QUERY]:
+        tz = get_zone(e.timezone)
+        try:
+            rule = parse_rule(e.recurrence)
+            first_local = e.start_at.astimezone(tz).replace(tzinfo=None)
+            for occ in expand(rule, first_start=first_local, duration=e.end_at -
+              ↪ e.start_at, tz=tz,
+                              window_start=start, window_end=end):
+                found.append(EventOccurrence(e, occ.start, occ.end, True))
+        except RuleError:
+            continue  # one broken rule must not hide the rest of the calendar
+    return sorted(found, key=lambda o: (o.start, o.event.id))

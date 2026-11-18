@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Streaming chat demo</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 640px; margin: 2rem auto; padding: 0 1rem; }
+    #log { border: 1px solid #6b7280; border-radius: 8px; padding: 1rem; min-height: 14rem; white-space: pre-wrap; }
+    .user { color: #1d4ed8; margin-top: .75rem; } .assistant { margin-top: .75rem; } .system { color: #6b7280; font-size: .85rem; }
+    form { display: flex; gap: .5rem; margin-top: 1rem; } input { flex: 1; padding: .6rem; }
+    button { padding: .6rem 1rem; }
+  </style>
+</head>
+<body>
+  <h1>Streaming chat demo</h1>
+  <p id="status" class="system">connecting...</p>
+  <div id="log" role="log" aria-live="polite"></div>
+  <form id="form">
+    <input id="text" autocomplete="off" placeholder="Type a message and press Enter" aria-label="Message">
+    <button type="submit">Send</button>
+    <button type="button" id="stop">Stop</button>
+  </form>
+  <script>
+    const conversationId = "{{ conversation.public_id }}";
+    const log = document.querySelector("#log");
+    const statusEl = document.querySelector("#status");
+    let socket, currentGeneration = null, currentNode = null;
+
+    function line(cls, text) {
+      const div = document.createElement("div");
+      div.className = cls;
+      div.textContent = text;                     // textContent, never innerHTML: model output is untrusted
+      log.appendChild(div);
+      return div;
+    }
+
+    function connect() {
+      const scheme = location.protocol === "https:" ? "wss://" : "ws://";
+      socket = new WebSocket(scheme + location.host + "/ws/chat/");
+      socket.onopen = () => { statusEl.textContent = "connected"; };
+      socket.onclose = (e) => { statusEl.textContent = "closed (code " + e.code + ")"; };
+      socket.onmessage = (event) => {
+        const msg = JSON.parse(event.data);
+        if (msg.type === "message.accepted") {
+          currentGeneration = msg.data.generation_id;
+          currentNode = line("assistant", "");
+        } else if (msg.type === "assistant.delta" && currentNode) {
+          currentNode.textContent += msg.data.text;
+        } else if (msg.type === "assistant.end") {
+          line("system", "[" + msg.data.status + ", " + msg.data.usage.output_tokens + " output tokens]");
+          currentGeneration = null;
+        } else if (msg.type === "assistant.error" || msg.type === "error") {
+          line("system", "[" + msg.data.code + "] " + msg.data.message);
+        } else if (msg.type === "notification") {
+          line("system", "notification: " + msg.data.title);
+        }
+      };
+    }
+
+    document.querySelector("#form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const input = document.querySelector("#text");
+      if (!input.value.trim()) return;
+      line("user", input.value);
+      socket.send(JSON.stringify({ type: "message.send", id: "c-" + Date.now(),
+                                   data: { conversation_id: conversationId, content: input.value } }));
+      input.value = "";
+    });
+    document.querySelector("#stop").addEventListener("click", () => {
+      if (currentGeneration) socket.send(JSON.stringify({ type: "generation.cancel", data: { generation_id: currentGeneration } }));
+    });
+    connect();
+  </script>
+</body>
+</html>

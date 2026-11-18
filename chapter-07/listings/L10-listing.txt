@@ -1,0 +1,10 @@
+Rule 1 OK (second live subscription rejected): UNIQUE constraint failed: subscriptions.user_id
+Rule 1 OK (canceled history allowed)
+Rule 2 first delivery processed: True
+Rule 2 duplicate delivery processed: False
+Rule 3 November usage: 12000 of 1000000 tokens (1.2%)
+Rule 4 OK (negative price rejected): CHECK constraint failed: price_cents >= 0
+Rule 4 OK (invalid role rejected): CHECK constraint failed: role IN ('member', 'admin')
+Rule 4 OK (unknown user rejected): FOREIGN KEY constraint failed
+Plan without index: SCAN usage_records
+Plan with index:    SEARCH usage_records USING INDEX idx_usage_user_created (user_id=? AND created_at>?)

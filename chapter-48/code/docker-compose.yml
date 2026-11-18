@@ -1,0 +1,61 @@
+# Local development stack: docker compose up --build
+name: ai-chat
+
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: aichat
+      POSTGRES_USER: aichat
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aichat -d aichat"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    build: ./backend
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://aichat:${POSTGRES_PASSWORD}@db:5432/aichat
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      db: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    ports: ["8000:8000"]
+    command: sh -c "python manage.py migrate --noinput && daphne -b 0.0.0.0 -p 8000 config.asgi:application"
+
+  celery:
+    build: ./backend
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://aichat:${POSTGRES_PASSWORD}@db:5432/aichat
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      db: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    command: celery -A config worker --loglevel=info
+
+  web:
+    build:
+      context: ./web
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:8000
+    environment:
+      API_INTERNAL_URL: http://backend:8000   # server-side calls use the Docker network name
+    depends_on: [backend]
+    ports: ["3000:3000"]
+
+volumes:
+  pgdata:

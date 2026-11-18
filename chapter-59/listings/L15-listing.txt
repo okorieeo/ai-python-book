@@ -1,0 +1,10 @@
+packages/shared/src/
+  assistant-protocol.ts        message types, chat reducer, tool labels
+  assistant-protocol.test.ts   11 tests
+  calendar-layout.ts           side-by-side placement of overlapping events
+  calendar-layout.test.ts      13 tests
+  useAssistant.ts              one WebSocket hook for web and React Native
+web/components/assistant/      ChatView.tsx, AssistantPanel.tsx
+web/components/calendar/       DayColumn.tsx
+web/app/(app)/today/page.tsx
+mobile/app/(tabs)/assistant.tsx

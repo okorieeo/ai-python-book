@@ -1,0 +1,6 @@
+extend = "../backend/pyproject.toml"
+
+[lint.per-file-ignores]
+"changed_areas.py" = ["T201"]   # these scripts talk to the workflow by printing
+"gate.py" = ["T201"]
+"test_*.py" = ["S101", "S603"]

@@ -1,0 +1,12 @@
+load_settings() raises json.decoder.JSONDecodeError and the app will not start.
+Environment: Python 3.12, no third-party packages.
+Expected: load_settings(text) returns a dict.
+Instead: JSONDecodeError (traceback below).
+Smallest reproduction: examples/failing_loader.py.
+Already tried: confirmed the file reads fine with open().
+Constraints: keep the signature; no new dependencies.
+
+Please: (1) list the most likely causes, most likely first, and what evidence would
+confirm each; (2) write a failing test that reproduces it, before proposing a fix;
+(3) propose the smallest change that makes the test pass; (4) tell me what you could
+not verify from what I gave you.

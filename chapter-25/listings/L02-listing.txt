@@ -1,0 +1,27 @@
+// 1. "Text strings must be rendered..." when count is 0
+{count && <Badge count={count} />}                 // BAD: renders the number 0
+{count > 0 ? <Badge count={count} /> : null}       // GOOD
+
+// 2. "Rendered more hooks..." - a hook after a return
+function Screen({ id }: { id?: string }) {
+  if (!id) return null;                            // BAD: returns before the hook
+      below
+  const { messages } = useMessages(id);
+  // ...
+}
+function ScreenFixed({ id }: { id?: string }) {
+  const { messages } = useMessages(id ?? '');      // GOOD: hooks first,
+  if (!id) return null;                            // decisions after
+  // ...
+}
+
+// 3. "Maximum update depth exceeded" - an effect that feeds itself
+useEffect(() => { setItems([...items, extra]); }, [items]);        // BAD: items
+    changes, so it runs again
+useEffect(() => { setItems((prev) => [...prev, extra]); }, [extra]); // GOOD
+
+// 4. A list inside a ScrollView
+<ScrollView><Header /><FlashList data={rows} renderItem={renderRow} /></ScrollView>
+    // BAD
+<FlashList data={rows} renderItem={renderRow} ListHeaderComponent={Header} />
+    // GOOD

@@ -1,0 +1,11 @@
+from anthropic import AsyncAnthropic
+
+client = AsyncAnthropic()            # reads ANTHROPIC_API_KEY from the environment
+
+message = await client.messages.create(
+    model="claude-sonnet-5-5",
+    max_tokens=1024,                 # required: the most the reply may contain
+    system="You are the assistant inside the AI Chat app.",
+    messages=[{"role": "user", "content": "Hello"}],
+)
+print(message.content[0].text, message.stop_reason, message.usage)

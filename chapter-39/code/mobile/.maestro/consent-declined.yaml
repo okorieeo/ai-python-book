@@ -1,0 +1,6 @@
+appId: com.example.aichat.preview
+---
+- launchApp:
+    clearState: true
+- tapOn: "Not now"
+- assertNotVisible: "Message"

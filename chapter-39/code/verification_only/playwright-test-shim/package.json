@@ -1,0 +1,1 @@
+{ "name": "@playwright/test", "version": "0.0.0-standin", "type": "module", "main": "index.mjs" }

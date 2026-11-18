@@ -1,0 +1,9 @@
+{
+  "name": "chapter-32-multimodal",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "test": "tsx --test __tests__/*.test.ts",
+    "typecheck": "tsc --noEmit"
+  }
+}

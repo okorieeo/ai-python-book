@@ -1,0 +1,12 @@
+ERROR: test_default_now_works_with_aware_start (lab.test_lab.Bug3NaiveTime...)
+TypeError: can't subtract offset-naive and offset-aware datetimes
+FAIL: test_message_is_stored (lab.test_lab.Bug1ForgottenAwait...)
+AssertionError: Lists differ: [] != ['hello']
+FAIL: test_requests_do_not_share_tags (lab.test_lab.Bug2SharedDefault...)
+AssertionError: Lists differ: ['a', 'b'] != ['b']
+FAIL: test_correct_and_few_queries (lab.test_lab.Bug4NPlusOne...)
+AssertionError: 51 not less than or equal to 2 : 51 queries for 50 conversations
+FAIL: test_two_simultaneous_spends_cannot_overdraw (lab.test_lab.Bug5Race...)
+AssertionError: -60 not greater than or equal to 0 : balance went to -60
+Ran 6 tests in 0.011s
+FAILED (failures=4, errors=1)

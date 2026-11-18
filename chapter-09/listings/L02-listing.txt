@@ -1,0 +1,16 @@
+python contrast_check.py
+--- light theme ---
+PASS  17.74:1 (needs 4.5)  body text: text #111827 on surface #FFFFFF
+PASS   7.56:1 (needs 4.5)  secondary text: text-muted #4B5563 on surface #FFFFFF
+PASS   5.17:1 (needs 4.5)  button label: on-primary #FFFFFF on primary #2563EB
+PASS   6.47:1 (needs 4.5)  error message: danger #B91C1C on surface #FFFFFF
+PASS   4.83:1 (needs 3.0)  input border (UI component): border-strong #6B7280 on surface #FFFFFF
+--- dark theme ---
+PASS  17.92:1 (needs 4.5)  body text: text #F9FAFB on surface #0B1220
+PASS   7.36:1 (needs 4.5)  button label: on-primary #0B1220 on primary #60A5FA
+...
+--- a common mistake ---
+FAIL   2.54:1 (needs 4.5)  light gray placeholder text on white
+The pale default border #D1D5DB on white is only 1.47:1, so inputs use border-strong instead.
+
+0 failure(s) in the token palettes

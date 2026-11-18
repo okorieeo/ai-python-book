@@ -1,0 +1,37 @@
+        results: list[dict] = []
+        pending: list[PendingCall] = []
+        for call in calls:
+            calls_made += 1
+            if calls_made > limits.max_tool_calls:
+                results.append(result_block(call.id, _error("too_many_tool_calls", "Too
+                  ↪ many tool calls in one request.")))
+                continue
+            tool = registry.get(call.name)
+            if tool is not None and tool.risk is Risk.CONFIRM:
+                try:
+                    clean = registry.validate(tool, call.arguments)
+                    summary = tool.summarize(ctx, clean)
+                except ArgumentError as exc:
+                    results.append(result_block(call.id, _error("invalid_arguments", ";
+                      ↪ ".join(exc.problems))))
+                except ToolError as exc:
+                    results.append(result_block(call.id, _error(exc.code, str(exc))))
+                except Exception:  # noqa: BLE001
+                    log.exception("summarize_failed", extra={"tool": call.name})
+                    results.append(result_block(call.id, _error("internal_error", "The
+                      ↪ tool failed.")))
+                else:
+                    pending.append(PendingCall(call.id, tool.name, clean, summary))
+                    emit("confirmation_required", tool_use_id=call.id, tool=tool.name,
+                      ↪ summary=summary)
+                continue
+            emit("tool_started", tool=call.name)
+            outcome = registry.execute(call.name, call.arguments, ctx)
+            emit("tool_finished", tool=call.name, ok=outcome.ok, code=outcome.code)
+            results.append(result_block(call.id, outcome))
+
+        if pending:
+            return AgentResult(Status.NEEDS_CONFIRMATION, turn.text, history, pending,
+              ↪ results,
+                               usage=usage, steps=steps, tool_calls=calls_made)
+        history.append({"role": "user", "content": results})

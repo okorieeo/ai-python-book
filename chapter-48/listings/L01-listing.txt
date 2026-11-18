@@ -1,0 +1,20 @@
+Task T1 of docs/specs/share-conversation-tasks.md. Write contracts/openapi.json
+  (OpenAPI 3.0.3, JSON)
+for the endpoints this spec needs. Do not touch backend/, web/ or mobile/.
+
+Rules:
+- Paths start with /api/v1/. Every operation has a camelCase operationId, a tag and
+  a summary.
+- Owner endpoints use bearer auth. The public read endpoint declares security: [] so
+  it is
+  visibly public. The link token is a path parameter on that endpoint.
+- Every operation documents its error responses with the shared Error schema {code,
+  message}.
+- The full share URL appears only in the create response (AC-2). The list response
+  must not
+  contain a url property at all.
+- Unknown, expired and revoked links share ONE 404 response (AC-6).
+- No untyped objects: every response has named properties.
+
+When done, run: python -m tools.contract_lint contracts/openapi.json
+Fix every finding, then show me a summary table of the endpoints. Do not commit yet.

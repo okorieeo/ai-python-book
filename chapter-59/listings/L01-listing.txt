@@ -1,0 +1,34 @@
+class Task(models.Model):
+    class Status(models.TextChoices):
+        TODO = "todo", "To do"
+        DOING = "doing", "Doing"
+        DONE = "done", "Done"
+
+    public_id = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+      ↪ related_name="tasks")
+    title = models.CharField(max_length=200)
+    # length is enforced in services.py, not by the database
+    notes = models.TextField(blank=True)
+    status = models.CharField(max_length=8, choices=Status.choices, default=Status.TODO)
+    priority = models.PositiveSmallIntegerField(default=2)  # 1 low ... 4 urgent
+    due_at = models.DateTimeField(null=True, blank=True)    # UTC
+    estimate_minutes = models.PositiveSmallIntegerField(null=True, blank=True)
+    remind_at = models.DateTimeField(null=True, blank=True)  # UTC
+    completed_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        indexes = [models.Index(fields=["user", "status", "due_at"],
+          ↪ name="task_user_status_due_idx")]
+        constraints = [
+            # Django 5.1+ spells it condition=; the old check= keyword is removed in
+            # Django 6.
+            models.CheckConstraint(condition=models.Q(priority__gte=1, priority__lte=4),
+              ↪ name="task_priority_1_to_4"),
+        ]
+
+    def __str__(self) -> str:
+        return self.title

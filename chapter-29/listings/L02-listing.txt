@@ -1,0 +1,11 @@
+event: start
+data: {"user_message_id":41,"assistant_message_id":42}
+
+event: delta
+data: {"text":"Hello"}
+
+event: delta
+data: {"text":" there"}
+
+event: done
+data: {"assistant_message_id":42,"status":"complete","stop_reason":"end_turn"}

@@ -1,0 +1,25 @@
+Name                            Stmts   Miss Branch BrPart  Cover   Missing
+---------------------------------------------------------------------------
+attachments/apps.py                 4      0      0      0   100%
+attachments/audio.py               41      4      6      0    91%   27-30
+attachments/content.py             30      1     10      1    95%   73
+attachments/documents.py           56      3     12      1    94%   44, 52-53
+attachments/errors.py               7      0      0      0   100%
+attachments/images.py              63      3     16      2    94%   47, 57, 109
+attachments/limits.py              23      0      0      0   100%
+attachments/models.py              44      1      0      0    98%   63
+attachments/providers.py           61      1     12      1    97%   43
+attachments/serializers.py          8      0      0      0   100%
+attachments/services.py            54      1     22      1    97%   42
+attachments/sniff.py               39      0     22      0   100%
+attachments/speech_service.py      47      2     12      2    93%   24, 63
+attachments/speech_text.py         39      2     12      2    92%   36-37, 45->47
+attachments/tasks.py               93      0     14      1    99%   82->87
+attachments/urls.py                 3      0      0      0   100%
+attachments/views.py               83      5     10      1    94%   80, 93-94,
+    101-103
+attachments/vision_math.py         30      0     10      0   100%
+---------------------------------------------------------------------------
+TOTAL                             725     23    158     12    96%
+
+1 empty file skipped.

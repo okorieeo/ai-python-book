@@ -1,0 +1,20 @@
+def send_message(*, user, text: str, request=None, on_event=None) -> Outcome:
+    ctx = _context(user, request)
+    thread = get_thread(user)
+    _expire_stale(thread, ctx.now)
+    if thread.pending_actions.filter(status=PendingAction.Status.PENDING).exists():
+        raise AssistantBusy()
+    # raises DailyBudgetExceeded
+    check_daily_token_budget(user=user, estimated_tokens=ESTIMATED_RUN_TOKENS)
+
+    # raises ValueError if empty or too long
+    stamped = stamp_user_message(text, now=ctx.now, tz=ctx.tz)
+    history = trim_history(thread.messages) + [{"role": "user", "content": stamped}]
+    model = get_model_client()
+    result = run_agent(
+        model, build_registry(), ctx, system=build_system_prompt(tz_name=ctx.tz.key,
+          ↪ today=ctx.now.astimezone(ctx.tz).date()),
+        messages=history, limits=LIMITS, on_event=_forward(user, on_event),
+    )
+    return _save(thread, result, user, getattr(model, "model",
+      ↪ settings.ASSISTANT_MODEL), ctx)

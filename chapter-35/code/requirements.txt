@@ -1,0 +1,3 @@
+# Versions the chapter's tests were run with. Newer minor versions should work.
+Django>=6.1,<7
+djangorestframework>=3.18

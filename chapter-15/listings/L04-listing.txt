@@ -1,0 +1,16 @@
+POST report.pdf  -> 202
+POST flaky.pdf   -> 202
+POST corrupt.pdf -> 202
+
+right after:
+  corrupt.pdf  processing  chunks=0 error=''
+  flaky.pdf    processing  chunks=0 error=''
+  report.pdf   processing  chunks=0 error=''
+after 3 seconds:
+  corrupt.pdf  failed      chunks=0 error='The file could not be read.'
+  flaky.pdf    processing  chunks=0 error=''
+  report.pdf   ready       chunks=3 error=''
+after 15 seconds:
+  corrupt.pdf  failed      chunks=0 error='The file could not be read.'
+  flaky.pdf    ready       chunks=3 error=''
+  report.pdf   ready       chunks=3 error=''

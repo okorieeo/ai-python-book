@@ -1,0 +1,11 @@
+A story is DONE when:
+[ ] The acceptance criteria pass
+[ ] Automated tests cover the new behavior (and existing tests still pass)
+[ ] Errors, empty and loading states are handled
+[ ] Input is validated on the server; permissions are checked
+[ ] The API change is reflected in openapi.yaml
+[ ] No secrets, debug code or leftover TODOs committed
+[ ] Reviewed in a pull request (by yourself or a teammate)
+[ ] Works on web and mobile at the supported sizes; accessible (keyboard, contrast)
+[ ] Deployed to staging and checked by hand
+[ ] Docs/README updated if setup or behavior changed

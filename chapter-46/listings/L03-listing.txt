@@ -1,0 +1,12 @@
+Before any UI: write src/lib/chat/reducer.ts and reducer.test.ts.
+State: messages, status (idle | streaming | error), error. Actions: history_loaded,
+    user_sent,
+server_event (token | done | error from @src/lib/chat/protocol.ts), connection_lost.
+Rules: user_sent adds the user message AND an empty pending assistant message;
+    tokens append only
+to a pending assistant message (a stray token after done is ignored and returns the
+    SAME state
+object); done gives the message its real id; an error keeps the partial text;
+    connection_lost while
+idle changes nothing. The reducer must not mutate its input. Test every rule. No
+    React in this file.

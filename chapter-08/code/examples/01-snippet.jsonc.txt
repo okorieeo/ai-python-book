@@ -1,0 +1,18 @@
+{
+  "code": "pro",
+  "name": "Pro",
+  "price_cents": 1900,
+  "currency": "USD",
+  "billing_interval": "month",
+  "monthly_token_limit": 1000000
+}
+
+{
+  "id": 301,
+  "role": "assistant",
+  "content": "Sure, here is a summary of your document.",
+  "model": "claude-sonnet-4-6",
+  "input_tokens": 212,
+  "output_tokens": 184,
+  "created_at": "2026-11-01T09:30:00Z"
+}

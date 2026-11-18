@@ -1,0 +1,76 @@
+[tool.ruff]
+line-length = 110
+target-version = "py312"
+extend-exclude = ["**/migrations/**"]
+
+[tool.ruff.lint]
+select = [
+  "E", "W",   # pycodestyle: basic style errors and warnings
+  "F",        # pyflakes: unused imports and variables, undefined names
+  "I",        # isort: import order
+  "B",        # bugbear: likely bugs
+  "UP",       # pyupgrade: modern Python syntax
+  "C4",       # comprehensions
+  "SIM",      # simplifications
+  "DJ",       # Django-specific mistakes
+  "S",        # bandit: security smells
+  "DTZ",      # naive datetimes
+  "T20",      # stray print() calls
+  "RUF",      # ruff's own rules
+]
+ignore = [
+  "RUF012",   # DRF and Django class attributes (Meta.ordering, permission_classes) are configuration, not shared state
+]
+
+[tool.ruff.lint.per-file-ignores]
+"**/test_*.py" = ["S101", "S105", "S106", "S311", "S603", "S607"]   # asserts, fake passwords, random noise, ffmpeg fixtures
+"**/testing.py" = ["S105", "S106", "S603", "S607"]
+"**/tests_*.py" = ["S101"]
+
+[tool.mypy]
+python_version = "3.12"
+plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main"]
+warn_unused_ignores = true
+warn_redundant_casts = true
+no_implicit_optional = true
+check_untyped_defs = true
+exclude = ["/migrations/"]
+
+[tool.django-stubs]
+django_settings_module = "config.settings"
+
+[[tool.mypy.overrides]]
+module = ["celery", "celery.*"]
+ignore_missing_imports = true   # Celery ships no type information
+
+[[tool.mypy.overrides]]
+module = [
+  "attachments.test_audio",
+  "attachments.test_content",
+  "attachments.test_documents",
+  "attachments.test_images",
+  "attachments.test_pipeline",
+  "attachments.test_providers",
+  "attachments.test_sniff",
+  "attachments.test_speech_api",
+  "attachments.test_speech_text",
+  "attachments.test_vision_math",
+  "attachments.testing",
+  "attachments.tests_pdf",
+]   # mypy globs match whole dotted components, so "test_*" would NOT work here
+ignore_errors = true            # tests poke at dicts and optional fields on purpose. They are linted and run; production code stays strict
+
+[[tool.mypy.overrides]]
+module = ["accounts.*"]
+ignore_errors = true            # stand-in for your own user model
+
+[tool.coverage.run]
+source = ["attachments"]
+branch = true
+omit = ["*/migrations/*", "*/test_*.py", "*/testing.py", "*/tests_pdf.py"]   # do not count the tests as tested code
+
+[tool.coverage.report]
+show_missing = true
+skip_empty = true
+fail_under = 90
+exclude_also = ["if TYPE_CHECKING:", "raise NotImplementedError"]

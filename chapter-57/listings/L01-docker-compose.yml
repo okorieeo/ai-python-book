@@ -1,0 +1,10 @@
+services:
+  db:
+    image: pgvector/pgvector:0.8.2-pg17
+    environment:
+      POSTGRES_DB: docuask
+      POSTGRES_USER: docuask
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set it in .env}
+    volumes: [pgdata:/var/lib/postgresql/data]
+volumes:
+  pgdata:

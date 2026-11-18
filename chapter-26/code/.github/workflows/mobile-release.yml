@@ -1,0 +1,34 @@
+name: Mobile release
+# Push a tag like v1.1.0 to start a store build. Nothing is submitted automatically:
+# a person decides when to run `eas submit` (see 26.11).
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+      - run: npm ci
+      - run: npm run test:release
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+      - run: npm run release:check
+        env:
+          APP_VARIANT: production
+          EXPO_PUBLIC_API_URL: https://api.example.com
+      - run: eas build --platform all --profile production --non-interactive --no-wait

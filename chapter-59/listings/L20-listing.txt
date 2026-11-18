@@ -1,0 +1,13 @@
+class ScriptedModel:
+    """Returns prepared turns in order and remembers what it was shown."""
+
+    def __init__(self, *turns):
+        self.turns = list(turns)
+        self.seen = []
+
+    def complete(self, *, system, messages, tools, on_text=None):
+        self.seen.append(copy.deepcopy(messages))
+        turn = self.turns.pop(0)
+        if on_text and turn.text:
+            on_text(turn.text)
+        return turn

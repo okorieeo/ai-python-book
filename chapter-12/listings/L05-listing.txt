@@ -1,0 +1,29 @@
+# 2. create a conversation
+HTTP/1.1 201 Created
+Content-Type: application/json
+X-Request-ID: req_c0b79993a0bd
+
+{"id":"43f17313-df6f-421c-85b1-ce0bf12532a9","title":"Trip plan",
+ "message_count":0,"created_at":"2026-11-02T08:50:33.861111Z",
+ "updated_at":"2026-11-02T08:50:33.861131Z"}
+
+# 3. the first send, then the identical retry
+HTTP/1.1 201 Created
+{"id":"f611843e-0b1a-41b8-afd6-961a1ac01a0d","role":"user",
+ "content":"Plan my trip","model":"","input_tokens":0,"output_tokens":0,
+ "created_at":"2026-11-02T08:50:33.907624Z"}
+
+HTTP/1.1 201 Created
+Idempotent-Replay: true
+{"id":"f611843e-0b1a-41b8-afd6-961a1ac01a0d","role":"user", ...same body... }
+
+# 4a. no token
+HTTP/1.1 401 Unauthorized
+WWW-Authenticate: Bearer realm="api"
+{"error":{"code":"not_authenticated","message":"Authentication credentials
+ were not provided.","request_id":"req_3285d35969bf"}}
+
+# 4b. blank title
+{"error":{"code":"validation_error","message":"Some fields are invalid.",
+ "fields":{"title":["This field may not be blank."]},
+ "request_id":"req_38a1a066aa25"}}

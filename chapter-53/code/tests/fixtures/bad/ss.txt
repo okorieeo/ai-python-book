@@ -1,0 +1,3 @@
+tcp   LISTEN 0      4096          0.0.0.0:22        0.0.0.0:*    users:(("sshd",pid=1021,fd=3))
+tcp   LISTEN 0      4096          0.0.0.0:5432      0.0.0.0:*    users:(("docker-proxy",pid=2210,fd=7))
+tcp   LISTEN 0      4096          0.0.0.0:6379      0.0.0.0:*    users:(("docker-proxy",pid=2231,fd=7))

@@ -1,0 +1,38 @@
+GET /api/v1/admin/overview
+{"users_total": 42, "users_new_7d": 7, "tokens_today": 32751,
+ "messages_today": 2, "documents_total": 55}
+
+GET /api/v1/admin/usage?days=7     (one point for every day, oldest first)
+{"days": 7, "series": [
+  {"date": "2026-10-29", "input_tokens": 59068,
+   "output_tokens": 36596, "calls": 42},
+  {"date": "2026-10-30", "input_tokens": 15067,
+   "output_tokens": 10534, "calls": 11},
+  ...
+  {"date": "2026-11-04", "input_tokens": 19711,
+   "output_tokens": 13040, "calls": 15}
+]}
+
+GET /api/v1/admin/usage/top-users?limit=3
+[{"username": "demo_user08", "tokens": 152564},
+ {"username": "demo_user16", "tokens": 142568},
+ {"username": "demo_user34", "tokens": 129989}]
+
+GET /api/v1/admin/documents/status       (every status, even at zero)
+[{"status": "uploaded", "count": 0},
+ {"status": "processing", "count": 4},
+ {"status": "ready", "count": 41},
+ {"status": "failed", "count": 10}]
+
+--- as support staff -----------------------------------------------------
+GET /api/v1/admin/overview   ->  403
+{"error":{"code":"permission_denied",
+ "message":"You do not have access to this resource.",
+ "request_id":"req_eb8381faf47e"}}
+
+--- a bad parameter ------------------------------------------------------
+GET /api/v1/admin/usage?days=999   ->  400
+{"error":{"code":"validation_error",
+ "message":"Some fields are invalid.",
+ "fields":{"days":["Enter a whole number from 1 to 365."]},
+ "request_id":"req_d620c43d9af7"}}

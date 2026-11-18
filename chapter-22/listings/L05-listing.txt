@@ -1,0 +1,10 @@
+ ✓ src/test/live.test.ts (4 tests)
+ ✓ src/components/UsersTable.test.tsx (10 tests)
+ ✓ src/components/ChartCard.test.tsx (4 tests)
+ ✓ src/components/RoleGate.test.tsx (4 tests)
+ ✓ src/lib/api.test.ts (3 tests)
+ ✓ src/lib/format.test.ts (2 tests)
+ ✓ src/lib/permissions.test.ts (3 tests)
+
+ Test Files  7 passed (7)
+      Tests  30 passed (30)

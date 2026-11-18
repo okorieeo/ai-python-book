@@ -1,0 +1,36 @@
+def _drive(model, registry, ctx, system, history, limits, on_event) -> AgentResult:
+    usage, steps, calls_made = Usage(), 0, 0
+
+    def emit(kind: str, **data):
+        if on_event:
+            on_event(AgentEvent(kind, data))
+
+    def stop(status: Status) -> AgentResult:
+        text = STOP_TEXT[status]
+        history.append({"role": "assistant", "content": [{"type": "text", "text":
+          ↪ text}]})  # keeps the history valid
+        return AgentResult(status, text, history, usage=usage, steps=steps,
+          ↪ tool_calls=calls_made)
+
+    while True:
+        if steps >= limits.max_steps:
+            return stop(Status.STEP_LIMIT)
+        if usage.total >= limits.max_total_tokens:
+            return stop(Status.TOKEN_LIMIT)
+
+        turn = model.complete(
+            system=system, messages=history, tools=registry.specs(),
+            on_text=(lambda t: emit("text_delta", text=t)) if on_event else None,
+        )
+        steps += 1
+        usage = usage + turn.usage
+
+        if turn.stop_reason == "max_tokens":
+            # a cut-off tool call may have broken arguments: never act on it
+            return stop(Status.TRUNCATED)
+        history.append({"role": "assistant", "content": turn.content})
+        calls = turn.tool_calls
+        if turn.stop_reason != "tool_use" or not calls:
+            text = turn.text or "I was not able to complete that request."
+            return AgentResult(Status.DONE, text, history, usage=usage, steps=steps,
+              ↪ tool_calls=calls_made)

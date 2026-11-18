@@ -1,0 +1,12 @@
+def parse_local_datetime(text: str) -> datetime:
+    """'2026-03-08T14:30' -> naive datetime. Offsets and 'Z' are rejected on purpose."""
+    value = text.strip() if isinstance(text, str) else ""
+    if not _LOCAL_DATETIME.match(value):
+        raise TimeInputError(
+            f"Expected local time like 2026-03-08T14:30 with no time zone offset; got
+              ↪ {text!r}."
+        )
+    try:
+        return datetime.fromisoformat(value)
+    except ValueError as exc:  # e.g. month 13
+        raise TimeInputError(f"{text!r} is not a real date and time.") from exc

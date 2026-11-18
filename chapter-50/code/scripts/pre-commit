@@ -1,0 +1,8 @@
+#!/bin/sh
+# Install:  cp scripts/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
+# Fast, always-on check: block a commit that adds something that looks like a secret.
+# (The fix gate from Chapter 49 is for bug-fix commits: run it by hand or in CI, not on every commit.)
+git diff --cached | python3 -m tools.secret_scan || {
+  echo "pre-commit: secret scan failed. Remove the secret (and rotate it if it was real)." >&2
+  exit 1
+}

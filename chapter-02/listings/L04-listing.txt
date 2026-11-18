@@ -1,0 +1,14 @@
+~/projects/
+  local-services/            # shared Postgres + Redis for development
+  ai-chat-app/
+    backend/                 # Django project
+      .venv/
+      manage.py
+      requirements.txt
+    web/                     # Next.js project
+      package.json
+    mobile/                  # React Native (Expo) project
+      package.json
+    docker-compose.yml       # production-style stack (Part IX)
+    .gitignore
+    README.md

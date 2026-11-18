@@ -1,0 +1,10 @@
+break 1: never refuse a user who is over their limit
+Ran 92 tests in 12.601s FAILED (failures=5)
+break 2: count usage over all time instead of the current period
+Ran 92 tests in 11.874s FAILED (failures=1, errors=1)
+break 3: keep paid access forever after a lapsed renewal
+Ran 92 tests in 12.236s FAILED (failures=1)
+break 4: mark an invoice paid after any payment, even a partial one
+Ran 92 tests in 12.477s FAILED (failures=1)
+restored
+Ran 92 tests in 12.434s OK

@@ -1,0 +1,7 @@
+   ▲ Next.js 15.3.0
+ ⨯ Error: fetch failed
+    at async load (/app/.next/server/app/s/[token]/page.js:1:1204)
+    at async SharedPage (/app/.next/server/app/s/[token]/page.js:1:1650) {
+  [cause]: Error: connect ECONNREFUSED 127.0.0.1:8000
+      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1555:16)
+}

@@ -1,0 +1,5 @@
+{
+  "_note": "EXAMPLE numbers only, NOT real prices. Copy your provider's current price per million tokens.",
+  "example-model-small": {"input": 1.00, "output": 3.00},
+  "example-model-large": {"input": 5.00, "output": 20.00}
+}

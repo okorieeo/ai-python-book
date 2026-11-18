@@ -1,0 +1,4 @@
+# The toolkit itself needs only the Python standard library.
+# These run its tests and the sample tests.
+pytest>=8
+pytest-cov>=5
